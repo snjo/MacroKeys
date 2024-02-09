@@ -1,0 +1,8 @@
+﻿Macro 1            // NameLine
+Examples           // CategoryLine
+Just an example    // Descripion
+True               // Enabled True or False
+K                  // Hotkey Key, see https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.keys?view=windowsdesktop-7.0
+Ctrl Shift         // Modifiers, choose 0-4 of Ctrl Alt Shift Win
+True               // Wait for all modifiers to be released before firing the hotkey, True or False
+Hello World        // The sequence of keys to fire, for special keys, see https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys?view=windowsdesktop-8.0
