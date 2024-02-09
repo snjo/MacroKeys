@@ -24,6 +24,8 @@ namespace MacroKeys
         public bool WaitForModifierRelease;
         public Hotkeys.Hotkey hotkey = new Hotkeys.Hotkey();
         public GlobalHotkey ghk;
+        public bool HotkeyError = false;
+        public bool MacroError = false;
 
         public Macro()
         {

@@ -1,5 +1,6 @@
 using Hotkeys;
 using MacroKeys.Properties;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -112,6 +113,7 @@ namespace MacroKeys
 
         private void ListMacros(List<Macro> macros)
         {
+            textBoxLog.Clear();
             foreach (Macro macro in macros)
             {
                 string keyWithMods = "";
@@ -120,6 +122,8 @@ namespace MacroKeys
                 if (macro.HotkeyShift) keyWithMods += "Shift+";
                 if (macro.HotkeyWin) keyWithMods += "Win+";
                 string enabled = macro.HotkeyEnabled? "Enabled" : "Disabled";
+                if (macro.HotkeyError) enabled = "Hotkey Error";
+                if (macro.MacroError) enabled += ", Macro Action Error";
                 keyWithMods += macro.HotkeyKey;
                 textBoxLog.Text += $"{macro.Name} ({macro.Category}) - {enabled}{Environment.NewLine}" +
                     $"{macro.Description}{Environment.NewLine}" +
@@ -168,6 +172,7 @@ namespace MacroKeys
                     }
                 }
             }
+            ListMacros(Macros);
         }
 
 
@@ -176,7 +181,16 @@ namespace MacroKeys
             TimeSpan timeSinceLastKeyPress = DateTime.Now - lastKeypress;
             if (timeSinceLastKeyPress.TotalMilliseconds > 300)// || lastMacroUsed != id)
             {
-                SendKeys.Send(macro.Action);
+                try
+                {
+                    SendKeys.Send(macro.Action);
+                    macro.MacroError = false;
+                }
+                catch
+                {
+                    macro.MacroError = true;
+                    Debug.WriteLine("Macro Error");
+                }
                 lastKeypress = DateTime.Now;
                 //lastMacroUsed = id;
                 //Debug.WriteLine($"sent macro {macro.Name}");
@@ -196,11 +210,15 @@ namespace MacroKeys
             {
                 if (ModifierKeys == Keys.None)
                 {
-                    SendMacro(delayedMacro);
-                    delayedActionActive = false;
-                    delayedMacro = null;
                     timerDelayAction.Stop();
+                    delayedActionActive = false;
+                    SendMacro(delayedMacro);
+                    delayedMacro = null;
                 }
+            }
+            else
+            {
+                timerDelayAction.Stop();
             }
         }
 

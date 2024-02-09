@@ -10,7 +10,9 @@ namespace Hotkeys
     {
         public static void LoadHotkeyFromMacro(Macro macro, Form parent)
         {
-            macro.ghk = new GlobalHotkey(macro.Modifiers(), macro.HotkeyKey, parent, macro.Name);
+            string key = macro.HotkeyKey;
+            if (key.Length == 1) key = key.ToUpper(); // hotkey A-Z must be upper case
+            macro.ghk = new GlobalHotkey(macro.Modifiers(), key, parent, macro.Name);
         }
 
         public static bool RegisterHotKey(GlobalHotkey ghk, bool warning = true)
@@ -42,13 +44,18 @@ namespace Hotkeys
             foreach (Macro macro in macros)
             {
                 LoadHotkeyFromMacro(macro, parent);
-                if (RegisterHotKey(macro.ghk, false)) //register the key, add a warning to the list if it fails
+                if (macro.HotkeyEnabled)
                 {
-                    Debug.WriteLine($"Hotkey registered {macro.Name}");
-                }
-                else
-                {
-                    warningKeys.Add(macro.Name);
+                    if (RegisterHotKey(macro.ghk, false)) //register the key, add a warning to the list if it fails
+                    {
+                        Debug.WriteLine($"Hotkey registered {macro.Name}");
+                        macro.HotkeyError = false;
+                    }
+                    else
+                    {
+                        warningKeys.Add(macro.Name);
+                        macro.HotkeyError = true;
+                    }
                 }
             }
 
