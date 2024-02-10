@@ -38,6 +38,12 @@ namespace Hotkeys
             return new Keys();
         }
 
+        public void SetKey(string keystring)
+        {
+            Keys key = stringToKey(keystring);  // assigns validKey
+            this.key = (int)key;
+        }
+
         public GlobalHotkey(int modifier, string keystring, Form form, string name = "Unnamed")
         {
             this.modifier = modifier;

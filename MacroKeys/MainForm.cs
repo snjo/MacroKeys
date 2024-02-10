@@ -29,7 +29,8 @@ namespace MacroKeys
             InitializeComponent();
             UpdateMacroFileList(MacroFolder);
             LoadMacros(MacroFiles);
-            ListMacros(Macros);           
+            //ListMacros(Macros);
+            AddHotkeyPanels(Macros);
             HotkeyTools.RegisterHotkeys(Macros, this);            
         }
 
@@ -80,6 +81,7 @@ namespace MacroKeys
                 if (lines.Length < 7) return null;
 
                 Macro newMacro = new Macro();
+                newMacro.FileName = filename;
                 newMacro.Name = LineWithoutComment(lines, NameLine);
                 newMacro.Category = LineWithoutComment(lines, CategoryLine);
                 newMacro.Description = LineWithoutComment(lines, DescriptionLine);
@@ -111,24 +113,35 @@ namespace MacroKeys
             }
         }
 
-        private void ListMacros(List<Macro> macros)
+        //private void ListMacros(List<Macro> macros)
+        //{
+        //    textBoxLog.Clear();
+        //    foreach (Macro macro in macros)
+        //    {
+        //        string keyWithMods = "";
+        //        if (macro.HotkeyCtrl) keyWithMods += "Ctrl+";
+        //        if (macro.HotkeyAlt) keyWithMods += "Alt+";
+        //        if (macro.HotkeyShift) keyWithMods += "Shift+";
+        //        if (macro.HotkeyWin) keyWithMods += "Win+";
+        //        string enabled = macro.HotkeyEnabled? "Enabled" : "Disabled";
+        //        if (macro.HotkeyError) enabled = "Hotkey Error";
+        //        if (macro.MacroError) enabled += ", Macro Action Error";
+        //        keyWithMods += macro.HotkeyKey;
+        //        textBoxLog.Text += $"{macro.Name} ({macro.Category}) - {enabled}{Environment.NewLine}" +
+        //            $"{macro.Description}{Environment.NewLine}" +
+        //            $"{keyWithMods}{Environment.NewLine}{macro.Action}" +
+        //            $"{Environment.NewLine}{Environment.NewLine}";
+        //    }
+        //}
+
+        private void AddHotkeyPanels(List<Macro> macros)
         {
-            textBoxLog.Clear();
-            foreach (Macro macro in macros)
+            for (int i = 0; i < macros.Count; i++)
             {
-                string keyWithMods = "";
-                if (macro.HotkeyCtrl) keyWithMods += "Ctrl+";
-                if (macro.HotkeyAlt) keyWithMods += "Alt+";
-                if (macro.HotkeyShift) keyWithMods += "Shift+";
-                if (macro.HotkeyWin) keyWithMods += "Win+";
-                string enabled = macro.HotkeyEnabled? "Enabled" : "Disabled";
-                if (macro.HotkeyError) enabled = "Hotkey Error";
-                if (macro.MacroError) enabled += ", Macro Action Error";
-                keyWithMods += macro.HotkeyKey;
-                textBoxLog.Text += $"{macro.Name} ({macro.Category}) - {enabled}{Environment.NewLine}" +
-                    $"{macro.Description}{Environment.NewLine}" +
-                    $"{keyWithMods}{Environment.NewLine}{macro.Action}" +
-                    $"{Environment.NewLine}{Environment.NewLine}";
+                HotkeyPanel hkp = macros[i].hotkeyPanel;
+                panel1.Controls.Add(hkp);
+                hkp.Location = new Point(2, 2 + (i*hkp.Height));
+                macros[i].FillPanelValues();
             }
         }
 
@@ -172,7 +185,7 @@ namespace MacroKeys
                     }
                 }
             }
-            ListMacros(Macros);
+            //ListMacros(Macros);
         }
 
 

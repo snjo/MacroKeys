@@ -29,29 +29,40 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            textBoxLog = new TextBox();
             timerDelayAction = new System.Windows.Forms.Timer(components);
+            panel1 = new Panel();
+            menuStrip1 = new MenuStrip();
             SuspendLayout();
-            // 
-            // textBoxLog
-            // 
-            textBoxLog.Location = new Point(12, 12);
-            textBoxLog.Multiline = true;
-            textBoxLog.Name = "textBoxLog";
-            textBoxLog.Size = new Size(457, 366);
-            textBoxLog.TabIndex = 0;
             // 
             // timerDelayAction
             // 
             timerDelayAction.Interval = 10;
             timerDelayAction.Tick += timerDelayAction_Tick;
             // 
+            // panel1
+            // 
+            panel1.AutoScroll = true;
+            panel1.Location = new Point(12, 37);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(717, 401);
+            panel1.TabIndex = 2;
+            // 
+            // menuStrip1
+            // 
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(740, 24);
+            menuStrip1.TabIndex = 3;
+            menuStrip1.Text = "menuStrip1";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(textBoxLog);
+            ClientSize = new Size(740, 450);
+            Controls.Add(panel1);
+            Controls.Add(menuStrip1);
+            MainMenuStrip = menuStrip1;
             Name = "MainForm";
             Text = "Form1";
             FormClosing += Form1_FormClosing;
@@ -60,7 +71,8 @@
         }
 
         #endregion
-        private TextBox textBoxLog;
         private System.Windows.Forms.Timer timerDelayAction;
+        private Panel panel1;
+        private MenuStrip menuStrip1;
     }
 }
