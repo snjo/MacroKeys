@@ -30,8 +30,13 @@
         {
             components = new System.ComponentModel.Container();
             timerDelayAction = new System.Windows.Forms.Timer(components);
-            panel1 = new Panel();
+            panelMacros = new Panel();
             menuStrip1 = new MenuStrip();
+            fileToolStripMenuItem = new ToolStripMenuItem();
+            newMacroToolStripMenuItem = new ToolStripMenuItem();
+            openMacroFolderToolStripMenuItem = new ToolStripMenuItem();
+            exitToolStripMenuItem = new ToolStripMenuItem();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // timerDelayAction
@@ -39,40 +44,75 @@
             timerDelayAction.Interval = 10;
             timerDelayAction.Tick += timerDelayAction_Tick;
             // 
-            // panel1
+            // panelMacros
             // 
-            panel1.AutoScroll = true;
-            panel1.Location = new Point(12, 37);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(717, 401);
-            panel1.TabIndex = 2;
+            panelMacros.AutoScroll = true;
+            panelMacros.Location = new Point(12, 37);
+            panelMacros.Name = "panelMacros";
+            panelMacros.Size = new Size(717, 401);
+            panelMacros.TabIndex = 2;
             // 
             // menuStrip1
             // 
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(740, 24);
             menuStrip1.TabIndex = 3;
             menuStrip1.Text = "menuStrip1";
             // 
+            // fileToolStripMenuItem
+            // 
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newMacroToolStripMenuItem, openMacroFolderToolStripMenuItem, exitToolStripMenuItem });
+            fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            fileToolStripMenuItem.Size = new Size(37, 20);
+            fileToolStripMenuItem.Text = "File";
+            // 
+            // newMacroToolStripMenuItem
+            // 
+            newMacroToolStripMenuItem.Name = "newMacroToolStripMenuItem";
+            newMacroToolStripMenuItem.Size = new Size(180, 22);
+            newMacroToolStripMenuItem.Text = "New Macro";
+            newMacroToolStripMenuItem.Click += NewMacroClick;
+            // 
+            // openMacroFolderToolStripMenuItem
+            // 
+            openMacroFolderToolStripMenuItem.Name = "openMacroFolderToolStripMenuItem";
+            openMacroFolderToolStripMenuItem.Size = new Size(180, 22);
+            openMacroFolderToolStripMenuItem.Text = "Open Macro folder";
+            openMacroFolderToolStripMenuItem.Click += OpenFolderClick;
+            // 
+            // exitToolStripMenuItem
+            // 
+            exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            exitToolStripMenuItem.Size = new Size(180, 22);
+            exitToolStripMenuItem.Text = "Exit";
+            exitToolStripMenuItem.Click += ExitClick;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(740, 450);
-            Controls.Add(panel1);
+            Controls.Add(panelMacros);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "MainForm";
             Text = "Form1";
             FormClosing += Form1_FormClosing;
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
         private System.Windows.Forms.Timer timerDelayAction;
-        private Panel panel1;
+        private Panel panelMacros;
         private MenuStrip menuStrip1;
+        private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem newMacroToolStripMenuItem;
+        private ToolStripMenuItem openMacroFolderToolStripMenuItem;
+        private ToolStripMenuItem exitToolStripMenuItem;
     }
 }

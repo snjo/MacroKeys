@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MacroKeys
 {
@@ -29,13 +30,26 @@ namespace MacroKeys
         public bool HotkeyError = false;
         public bool MacroError = false;
         public HotkeyPanel hotkeyPanel;
-        bool setupDone = false;
+        public bool setupDone = false;
         bool IsSaved = true;
+        MainForm Parent;
 
-        public Macro()
+        public Macro(MainForm parent, string name = "", bool waitForModifierRelease = true)
         {
+            Parent = parent;
             ghk = new GlobalHotkey();
             hotkeyPanel = new HotkeyPanel(this);
+            hotkeyPanel.textBoxName.Text = name;
+            hotkeyPanel.checkBoxWait.Checked = waitForModifierRelease;
+            hotkeyPanel.checkBoxEnabled.Checked = HotkeyEnabled;
+            hotkeyPanel.comboBoxKey.Text = HotkeyKey;
+            hotkeyPanel.checkBoxCtrl.Checked = HotkeyCtrl;
+            hotkeyPanel.checkBoxAlt.Checked = HotkeyAlt;
+            hotkeyPanel.checkBoxShift.Checked = HotkeyShift;
+            hotkeyPanel.checkBoxWin.Checked = HotkeyWin;
+            
+            hotkeyPanel.textBoxActions.Text = Action;
+
             hotkeyPanel.textBoxName.TextChanged += NameChanged;
             hotkeyPanel.checkBoxEnabled.MouseClick += EnabledClick;
             hotkeyPanel.checkBoxCtrl.MouseClick += CheckboxModifierClick;
@@ -46,7 +60,36 @@ namespace MacroKeys
             hotkeyPanel.textBoxActions.TextChanged += ActionTextChanged;
             hotkeyPanel.comboBoxKey.TextChanged += KeyChanged;
             hotkeyPanel.buttonSave.Click += SaveClick;
+            hotkeyPanel.buttonDelete.Click += DeleteClick;
+            hotkeyPanel.buttonEditAction.Click += EditActionClick;
+            
             UpdateSavedStatus(true);
+        }
+
+        private void EditActionClick(object? sender, EventArgs e)
+        {
+            MacroTextEntry textEntry = new MacroTextEntry(Action);
+            DialogResult result = textEntry.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                hotkeyPanel.textBoxActions.Text = textEntry.TextResult;
+            }
+        }
+
+        private void DeleteClick(object? sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show($"Are you sure you want to delete {Name}?", "Delete macro and file", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+                
+            if (result == DialogResult.Yes)
+            {
+                ghk.Unregister();
+                if (File.Exists(FileName))
+                {
+                    Debug.WriteLine("Deleting file: " + FileName);
+                    File.Delete(FileName);
+                }
+                Parent.DeleteMacro(this);
+            }
         }
 
         private void NameChanged(object? sender, EventArgs e)
@@ -57,7 +100,25 @@ namespace MacroKeys
 
         private void SaveClick(object? sender, EventArgs e)
         {
-            Save(FileName);
+            if (FileName == "")
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.InitialDirectory = Path.GetFullPath(".\\Macros");
+                saveFileDialog.Filter = "Text File|*.txt|All Files|*.*";
+                if (Name.Length > 0)
+                {
+                    saveFileDialog.FileName = Name;
+                }
+                DialogResult result = saveFileDialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    Save(saveFileDialog.FileName);
+                }
+            }
+            else
+            {
+                Save(FileName);
+            }
         }
 
         private void UpdateSavedStatus(bool isSaved)
@@ -73,19 +134,42 @@ namespace MacroKeys
             {
                 Debug.WriteLine("Saving to Directory " + dir);
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine($"{Name} // Name");
-                stringBuilder.AppendLine($"{Category} // Category");
-                stringBuilder.AppendLine($"{Description} // Description");
-                stringBuilder.AppendLine($"{HotkeyEnabled.ToString()} // Enabled True or False");
-                stringBuilder.AppendLine($"{HotkeyKey} // Hotkey Key, see https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.keys?view=windowsdesktop-7.0");
+                stringBuilder.AppendLine("Don't add or remove any lines below, the line numbers are used to read the file correctly:");  // Line 0
+
+                stringBuilder.AppendLine("NAME:");                                              // Line 1
+                stringBuilder.AppendLine(Name);                                                 // Line 2
+                stringBuilder.AppendLine("");                                                   // Line 3
+
+                stringBuilder.AppendLine("CATEGORY:");                                          // Line 4
+                stringBuilder.AppendLine(Category);                                             // Line 5
+                stringBuilder.AppendLine("");                                                   // Line 6
+
+                stringBuilder.AppendLine("DESCRIPTION:");                                       // Line 7
+                stringBuilder.AppendLine(Description);                                          // Line 8
+                stringBuilder.AppendLine("");                                                   // Line 9
+
+                stringBuilder.AppendLine("ENABLED:             // Enabled True or False");      // Line 10
+                stringBuilder.AppendLine(HotkeyEnabled.ToString());                             // Line 11
+                stringBuilder.AppendLine("");                                                   // Line 12
+
+                stringBuilder.AppendLine("KEY:                 // Hotkey Key, see https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.keys?view=windowsdesktop-7.0");  // Line 13
+                stringBuilder.AppendLine(HotkeyKey);                                            // Line 14
+                stringBuilder.AppendLine("");                                                   // Line 15
+
+                stringBuilder.AppendLine("MODIFIERS:           // Modifiers, choose 0-4 of Ctrl Alt Shift Win"); // Line 16
                 stringBuilder.Append(HotkeyCtrl ? "Ctrl ":"");
                 stringBuilder.Append(HotkeyAlt ? "Alt ":"");
                 stringBuilder.Append(HotkeyShift ? "Shift ":"");
-                stringBuilder.Append(HotkeyWin ? "Win ":"");
-                stringBuilder.AppendLine(" // Modifiers, choose 0-4 of Ctrl Alt Shift Win");
-                stringBuilder.AppendLine($"{WaitForModifierRelease.ToString()} // Wait for all modifiers to be released before firing the hotkey, True or False");
-                stringBuilder.Append(Action);
-                stringBuilder.AppendLine(" // The sequence of keys to fire, for special keys, see https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys?view=windowsdesktop-8.0");
+                stringBuilder.AppendLine(HotkeyWin ? "Win ":"");                                // Line 17
+                stringBuilder.AppendLine("");                                                   // Line 18
+
+                stringBuilder.AppendLine("WAIT FOR MODIFIER RELEASE: ");                        // Line 19
+                stringBuilder.AppendLine(WaitForModifierRelease.ToString());                    // Line 20
+                stringBuilder.AppendLine("");                                                   // Line 21
+
+                stringBuilder.AppendLine("ACTION:              // The sequence of keys to fire, for special keys, see https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys?view=windowsdesktop-8.0");
+                stringBuilder.AppendLine(Action);                                               // Line 23
+
                 Debug.WriteLine($"Saving file {filename}: " + stringBuilder.ToString());
                 File.WriteAllText(filename, stringBuilder.ToString());
                 UpdateSavedStatus(true);
@@ -112,15 +196,22 @@ namespace MacroKeys
 
         private void EnabledClick(object? sender, MouseEventArgs e)
         {
+            Debug.WriteLine("Enabled click");
+            HotkeyEnabled = hotkeyPanel.checkBoxEnabled.Checked;
             UpdateHotkey();
             UpdateSavedStatus(false);
         }
 
-        private void UpdateHotkey()
+        public void UpdateHotkey()
         {
-            if (setupDone == false) return;
-            if (hotkeyPanel.checkBoxEnabled.Checked)
+            if (setupDone == false)
             {
+                Debug.WriteLine("Update hotkey: Setup isn't done yet");
+                return;
+            }
+            if (HotkeyEnabled)
+            {
+                Debug.WriteLine("Update hotkey: Enabled");
                 if (ghk.registered)
                 {
                     Debug.WriteLine($"* UnRegistering hotkey {Name}, in order to re-register");
@@ -129,11 +220,19 @@ namespace MacroKeys
                 ghk.SetKey(HotkeyKey);
                 ghk.modifier = Modifiers();
                 Debug.WriteLine($"* Registering hotkey {Name}");
-                ghk.Register();
+                if (ghk.Register() == false)
+                {
+                    hotkeyPanel.comboBoxKey.BackColor = Color.Yellow;
+                }
+                else
+                {
+                    hotkeyPanel.comboBoxKey.BackColor = Color.White;
+                }
 
             }
             else
             {
+                Debug.WriteLine("Update hotkey: Disabled");
                 if (ghk.registered == true)
                 {
                     Debug.WriteLine($"* UnRegistering hotkey {Name}");

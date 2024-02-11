@@ -51,7 +51,7 @@ namespace Hotkeys
             this.key = (int)key;
             this.hWnd = form.Handle;
             displayName = name;
-            id = this.GetHashCode();
+            id = GetHashCode();
         }
 
         public GlobalHotkey()
@@ -61,11 +61,18 @@ namespace Hotkeys
 
         public override int GetHashCode()
         {
+            Debug.WriteLine($"Get hash code: mod:{modifier} key:{key} hwnd:{hWnd.ToInt32()}");
             return modifier ^ key ^ hWnd.ToInt32();
         }
 
         public bool Register()
         {
+            if (registered)
+            {
+                Debug.WriteLine("Key is already register, release first");
+                return false;
+            }
+            id = GetHashCode();
             if (validKey == false)
             {
                 registered = false;
@@ -75,13 +82,13 @@ namespace Hotkeys
             if (id != 0)
             {
                 registered = RegisterHotKey(hWnd, id, modifier, key);
-                //Debug.WriteLine("Registered hotkey:" + registered.ToString() + " / " + key + " / " + modifier);
+                Debug.WriteLine("Registered hotkey:" + registered.ToString() + " / " + key + " / " + modifier + " hash code: " + id);
                 return registered;
             }
             else
             {
                 registered = false;
-                Debug.WriteLine("Unknown register hotkey error: " + key + " / " + modifier);
+                Debug.WriteLine("Unknown register hotkey error: " + key + " / " + modifier + " hash code: " + id);
                 return registered;
             }
         }

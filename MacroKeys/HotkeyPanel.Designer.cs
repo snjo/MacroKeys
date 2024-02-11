@@ -39,6 +39,8 @@
             textBoxActions = new TextBox();
             checkBoxWait = new CheckBox();
             buttonSave = new Button();
+            buttonDelete = new Button();
+            buttonEditAction = new Button();
             SuspendLayout();
             // 
             // checkBoxEnabled
@@ -118,7 +120,7 @@
             // 
             // textBoxActions
             // 
-            textBoxActions.Location = new Point(74, 63);
+            textBoxActions.Location = new Point(74, 60);
             textBoxActions.Name = "textBoxActions";
             textBoxActions.Size = new Size(333, 23);
             textBoxActions.TabIndex = 8;
@@ -135,18 +137,38 @@
             // 
             // buttonSave
             // 
-            buttonSave.Location = new Point(23, 32);
+            buttonSave.Location = new Point(421, 6);
             buttonSave.Name = "buttonSave";
             buttonSave.Size = new Size(31, 23);
             buttonSave.TabIndex = 10;
             buttonSave.Text = "💾";
             buttonSave.UseVisualStyleBackColor = true;
             // 
+            // buttonDelete
+            // 
+            buttonDelete.Location = new Point(421, 33);
+            buttonDelete.Name = "buttonDelete";
+            buttonDelete.Size = new Size(31, 23);
+            buttonDelete.TabIndex = 11;
+            buttonDelete.Text = "🗑";
+            buttonDelete.UseVisualStyleBackColor = true;
+            // 
+            // buttonEditAction
+            // 
+            buttonEditAction.Location = new Point(421, 59);
+            buttonEditAction.Name = "buttonEditAction";
+            buttonEditAction.Size = new Size(31, 23);
+            buttonEditAction.TabIndex = 12;
+            buttonEditAction.Text = "...";
+            buttonEditAction.UseVisualStyleBackColor = true;
+            // 
             // HotkeyPanel
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BorderStyle = BorderStyle.FixedSingle;
+            Controls.Add(buttonEditAction);
+            Controls.Add(buttonDelete);
             Controls.Add(buttonSave);
             Controls.Add(checkBoxWait);
             Controls.Add(textBoxActions);
@@ -159,7 +181,7 @@
             Controls.Add(comboBoxKey);
             Controls.Add(checkBoxEnabled);
             Name = "HotkeyPanel";
-            Size = new Size(410, 89);
+            Size = new Size(455, 87);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -176,5 +198,7 @@
         public TextBox textBoxActions;
         public CheckBox checkBoxWait;
         public Button buttonSave;
+        public Button buttonDelete;
+        public Button buttonEditAction;
     }
 }

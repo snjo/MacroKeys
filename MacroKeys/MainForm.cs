@@ -2,10 +2,13 @@ using Hotkeys;
 using MacroKeys.Properties;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace MacroKeys
 {
@@ -15,14 +18,15 @@ namespace MacroKeys
         int lastMacroUsed = -1;
         List<Macro> Macros = [];
         string MacroFolder = @".\macros\";
-        int NameLine = 0;
-        int CategoryLine = 1;
-        int DescriptionLine = 2;
-        int EnabledLine = 3;
-        int KeyLine = 4;
-        int ModifiersLine = 5;
-        int WaitForModifierReleaseLine = 6;
-        int ActionLine = 7;
+        int NameLine = 2;
+        int CategoryLine = 5;
+        int DescriptionLine = 8;
+        int EnabledLine = 11;
+        int KeyLine = 14;
+        int ModifiersLine = 17;
+        int WaitForModifierReleaseLine = 20;
+        // Line 7 is for Action comment, so // can be included in Action
+        int ActionLine = 23;
 
         public MainForm()
         {
@@ -31,7 +35,12 @@ namespace MacroKeys
             LoadMacros(MacroFiles);
             //ListMacros(Macros);
             AddHotkeyPanels(Macros);
-            HotkeyTools.RegisterHotkeys(Macros, this);            
+            foreach (Macro macro in Macros)
+            {
+                //HotkeyTools.RegisterHotkeyFromMacro(this, macro);
+                HotkeyTools.AssignGlobalHotkeyToMacro(macro, this);
+                macro.UpdateHotkey();
+            }
         }
 
         public Dictionary<string, Hotkey> HotkeyList = new Dictionary<string, Hotkey>();
@@ -78,9 +87,9 @@ namespace MacroKeys
             {
 
                 string[] lines = File.ReadAllLines(filename);
-                if (lines.Length < 7) return null;
+                if (lines.Length < ActionLine + 1) return null;
 
-                Macro newMacro = new Macro();
+                Macro newMacro = new Macro(this);
                 newMacro.FileName = filename;
                 newMacro.Name = LineWithoutComment(lines, NameLine);
                 newMacro.Category = LineWithoutComment(lines, CategoryLine);
@@ -113,35 +122,23 @@ namespace MacroKeys
             }
         }
 
-        //private void ListMacros(List<Macro> macros)
-        //{
-        //    textBoxLog.Clear();
-        //    foreach (Macro macro in macros)
-        //    {
-        //        string keyWithMods = "";
-        //        if (macro.HotkeyCtrl) keyWithMods += "Ctrl+";
-        //        if (macro.HotkeyAlt) keyWithMods += "Alt+";
-        //        if (macro.HotkeyShift) keyWithMods += "Shift+";
-        //        if (macro.HotkeyWin) keyWithMods += "Win+";
-        //        string enabled = macro.HotkeyEnabled? "Enabled" : "Disabled";
-        //        if (macro.HotkeyError) enabled = "Hotkey Error";
-        //        if (macro.MacroError) enabled += ", Macro Action Error";
-        //        keyWithMods += macro.HotkeyKey;
-        //        textBoxLog.Text += $"{macro.Name} ({macro.Category}) - {enabled}{Environment.NewLine}" +
-        //            $"{macro.Description}{Environment.NewLine}" +
-        //            $"{keyWithMods}{Environment.NewLine}{macro.Action}" +
-        //            $"{Environment.NewLine}{Environment.NewLine}";
-        //    }
-        //}
-
         private void AddHotkeyPanels(List<Macro> macros)
         {
             for (int i = 0; i < macros.Count; i++)
             {
                 HotkeyPanel hkp = macros[i].hotkeyPanel;
-                panel1.Controls.Add(hkp);
-                hkp.Location = new Point(2, 2 + (i*hkp.Height));
+                panelMacros.Controls.Add(hkp);
                 macros[i].FillPanelValues();
+                hkp.Location = new Point(2, 2 + (i * hkp.Height + 2));
+            }
+        }
+
+        private static void UpdateHotkeyPanelLocations(List<Macro> macros)
+        {
+            for (int i = 0; i < macros.Count; i++)
+            {
+                HotkeyPanel hkp = macros[i].hotkeyPanel;
+                hkp.Location = new Point(2, 2 + (i * (hkp.Height + 2)));
             }
         }
 
@@ -171,6 +168,7 @@ namespace MacroKeys
         {
             foreach (Macro macro in Macros)
             {
+                //Debug.WriteLine($"hotkey id {id}, macro id {macro.ghk.id}");
                 if (id == macro.ghk.id)
                 {
                     if (macro.WaitForModifierRelease && ModifierKeys != Keys.None)
@@ -185,7 +183,6 @@ namespace MacroKeys
                     }
                 }
             }
-            //ListMacros(Macros);
         }
 
 
@@ -198,10 +195,12 @@ namespace MacroKeys
                 {
                     SendKeys.Send(macro.Action);
                     macro.MacroError = false;
+                    macro.hotkeyPanel.textBoxActions.BackColor = Color.White;
                 }
                 catch
                 {
                     macro.MacroError = true;
+                    macro.hotkeyPanel.textBoxActions.BackColor = Color.Orange;
                     Debug.WriteLine("Macro Error");
                 }
                 lastKeypress = DateTime.Now;
@@ -233,6 +232,53 @@ namespace MacroKeys
             {
                 timerDelayAction.Stop();
             }
+        }
+
+        private void NewMacroClick(object sender, EventArgs e)
+        {
+            Macro newMacro = new Macro(this, "", true);
+            //newMacro.WaitForModifierRelease = true;
+            Macros.Add(newMacro);
+            panelMacros.Controls.Add(newMacro.hotkeyPanel);
+            UpdateHotkeyPanelLocations(Macros);
+            newMacro.setupDone = true;
+            HotkeyTools.RegisterHotkeyFromMacro(this, newMacro);
+        }
+
+        public void DeleteMacro(Macro macro)
+        {
+            Macros.Remove(macro);
+            panelMacros.Controls.Remove(macro.hotkeyPanel);
+            UpdateHotkeyPanelLocations(Macros);
+        }
+
+        public string BrowseFolderInExplorer(string folder)
+        {
+            if (folder.Length < 1)
+            {
+                folder = ".";
+            }
+            if (Directory.Exists(folder))
+            {
+                Debug.WriteLine("Opening folder: " + folder);
+                Process.Start(new ProcessStartInfo() { FileName = folder, UseShellExecute = true });
+            }
+            else
+            {
+                Debug.WriteLine("Can't open folder " + folder);
+            }
+
+            return folder;
+        }
+
+        private void OpenFolderClick(object sender, EventArgs e)
+        {
+            BrowseFolderInExplorer(MacroFolder);//Path.GetFullPath(MacroFolder));
+        }
+
+        private void ExitClick(object sender, EventArgs e)
+        {
+            Close();
         }
 
         // https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys.send?view=windowsdesktop-7.0
