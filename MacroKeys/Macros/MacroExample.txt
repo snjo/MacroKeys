@@ -1,8 +1,24 @@
-﻿Macro 1            // NameLine
-Examples           // CategoryLine
-Just an example    // Descripion
-True               // Enabled True or False
-K                  // Hotkey Key, see https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.keys?view=windowsdesktop-7.0
-Ctrl Shift         // Modifiers, choose 0-4 of Ctrl Alt Shift Win
-True               // Wait for all modifiers to be released before firing the hotkey, True or False
-Hello World        // The sequence of keys to fire, for special keys, see https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys?view=windowsdesktop-8.0
+Don't add or remove any lines below, the line numbers are used to read the file correctly:
+NAME:
+Example, Hello
+
+CATEGORY:
+Examples
+
+DESCRIPTION:
+Just an example
+
+ENABLED:             // Enabled True or False
+True
+
+KEY:                 // Hotkey Key, see https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.keys?view=windowsdesktop-7.0
+E
+
+MODIFIERS:           // Modifiers, choose 0-4 of Ctrl Alt Shift Win
+Ctrl Alt Shift Win
+
+WAIT FOR MODIFIER RELEASE: 
+True
+
+ACTION:              // The sequence of keys to fire, for special keys, see https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys?view=windowsdesktop-8.0
+Hello world!

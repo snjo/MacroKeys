@@ -40,7 +40,9 @@ namespace MacroKeys
             ghk = new GlobalHotkey();
             hotkeyPanel = new HotkeyPanel(this);
             hotkeyPanel.textBoxName.Text = name;
+            Name = name;
             hotkeyPanel.checkBoxWait.Checked = waitForModifierRelease;
+            WaitForModifierRelease = waitForModifierRelease;
             hotkeyPanel.checkBoxEnabled.Checked = HotkeyEnabled;
             hotkeyPanel.comboBoxKey.Text = HotkeyKey;
             hotkeyPanel.checkBoxCtrl.Checked = HotkeyCtrl;
@@ -113,6 +115,7 @@ namespace MacroKeys
                 if (result == DialogResult.OK)
                 {
                     Save(saveFileDialog.FileName);
+                    FileName = saveFileDialog.FileName;
                 }
             }
             else

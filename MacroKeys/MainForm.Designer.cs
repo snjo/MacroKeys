@@ -47,9 +47,10 @@
             // panelMacros
             // 
             panelMacros.AutoScroll = true;
-            panelMacros.Location = new Point(12, 37);
+            panelMacros.Dock = DockStyle.Fill;
+            panelMacros.Location = new Point(0, 24);
             panelMacros.Name = "panelMacros";
-            panelMacros.Size = new Size(717, 401);
+            panelMacros.Size = new Size(740, 426);
             panelMacros.TabIndex = 2;
             // 
             // menuStrip1
@@ -71,21 +72,21 @@
             // newMacroToolStripMenuItem
             // 
             newMacroToolStripMenuItem.Name = "newMacroToolStripMenuItem";
-            newMacroToolStripMenuItem.Size = new Size(180, 22);
+            newMacroToolStripMenuItem.Size = new Size(174, 22);
             newMacroToolStripMenuItem.Text = "New Macro";
             newMacroToolStripMenuItem.Click += NewMacroClick;
             // 
             // openMacroFolderToolStripMenuItem
             // 
             openMacroFolderToolStripMenuItem.Name = "openMacroFolderToolStripMenuItem";
-            openMacroFolderToolStripMenuItem.Size = new Size(180, 22);
+            openMacroFolderToolStripMenuItem.Size = new Size(174, 22);
             openMacroFolderToolStripMenuItem.Text = "Open Macro folder";
             openMacroFolderToolStripMenuItem.Click += OpenFolderClick;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(180, 22);
+            exitToolStripMenuItem.Size = new Size(174, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += ExitClick;
             // 
@@ -98,7 +99,7 @@
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "MainForm";
-            Text = "Form1";
+            Text = "Macro Keys";
             FormClosing += Form1_FormClosing;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
