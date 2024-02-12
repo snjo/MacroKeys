@@ -121,7 +121,9 @@
             // textBoxActions
             // 
             textBoxActions.Location = new Point(74, 60);
+            textBoxActions.Multiline = true;
             textBoxActions.Name = "textBoxActions";
+            textBoxActions.ScrollBars = ScrollBars.Vertical;
             textBoxActions.Size = new Size(333, 23);
             textBoxActions.TabIndex = 8;
             // 

@@ -100,12 +100,26 @@ namespace MacroKeys
                 (newMacro.HotkeyCtrl, newMacro.HotkeyAlt, newMacro.HotkeyShift, newMacro.HotkeyWin) = ParseModifiers(LineWithoutComment(lines, ModifiersLine));
                 newMacro.WaitForModifierRelease = LineWithoutComment(lines, WaitForModifierReleaseLine).ToLower() == "true";
 
-                newMacro.Action = LineWithoutComment(lines, ActionLine);
+                newMacro.Action = ReadLines(lines, ActionLine);
 
                 Debug.WriteLine($"Added macro {newMacro.Name}, in category {newMacro.Category}, {newMacro.HotkeyKey} {newMacro.HotkeyCtrl}");
                 return newMacro;
             }
             return null;
+        }
+
+        private string ReadLines(string[] lines, int startFromLine)
+        {
+            string result = "";
+            for (int i = startFromLine; i < lines.Length; i++)
+            {
+                result += lines[i];
+                if (i < lines.Length - 1)
+                {
+                    result += Environment.NewLine;
+                }
+            }
+            return result;
         }
 
         private string LineWithoutComment(string[] lines, int lineNumber)

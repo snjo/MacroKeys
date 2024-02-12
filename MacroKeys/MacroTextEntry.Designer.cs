@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MacroTextEntry));
             textBox1 = new TextBox();
             buttonOK = new Button();
             checkBoxCtrl = new CheckBox();
@@ -148,6 +149,7 @@
             Controls.Add(panelAddModifiedKeys);
             Controls.Add(buttonOK);
             Controls.Add(textBox1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MacroTextEntry";
             Text = "MacroTextEntry";
             panelAddModifiedKeys.ResumeLayout(false);

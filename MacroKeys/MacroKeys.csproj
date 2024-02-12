@@ -6,7 +6,12 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>img\macrokeys.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="img\macrokeys.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Hotkeys\" />

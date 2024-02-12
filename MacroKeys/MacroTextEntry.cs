@@ -55,7 +55,7 @@ namespace MacroKeys
                 newButton.Height = 25;
                 newButton.Click += AddKeyString;
                 this.Controls.Add(newButton);
-                Debug.WriteLine($"Add button: {buttons[i]}, at {newButton.Location}, size {newButton.Size}");
+                //Debug.WriteLine($"Add button: {buttons[i]}, at {newButton.Location}, size {newButton.Size}");
             }
         }
 

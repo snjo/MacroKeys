@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             timerDelayAction = new System.Windows.Forms.Timer(components);
             panelMacros = new Panel();
             menuStrip1 = new MenuStrip();
@@ -97,6 +98,7 @@
             ClientSize = new Size(487, 450);
             Controls.Add(panelMacros);
             Controls.Add(menuStrip1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
             Name = "MainForm";
             Text = "Macro Keys";
