@@ -34,6 +34,12 @@ namespace MacroKeys
             InitializeComponent();
             string? folderName = RegistrySetting.LoadStringFromRegistry("Macrofolder");
             if (folderName != null) { MacroFolder = folderName; }
+            LoadMacros();
+            Autorun.Autorun.UpdatePathIfEnabled(ApplicationName);
+        }
+
+        private void LoadMacros()
+        {
             UpdateMacroFileList(MacroFolder);
             LoadMacros(MacroFiles);
             //ListMacros(Macros);
@@ -44,7 +50,6 @@ namespace MacroKeys
                 HotkeyTools.AssignGlobalHotkeyToMacro(macro, this);
                 macro.UpdateHotkey();
             }
-            Autorun.Autorun.UpdatePathIfEnabled(ApplicationName);
         }
 
         public Dictionary<string, Hotkey> HotkeyList = new Dictionary<string, Hotkey>();
@@ -319,11 +324,10 @@ namespace MacroKeys
             }
             if (oldMacroFolder != MacroFolder)
             {
-                Macros.Clear();
-                UpdateMacroFileList(MacroFolder);
-                LoadMacros(MacroFiles);
+                HotkeyTools.ReleaseHotkeys(Macros);
                 panelMacros.Controls.Clear();
-                AddHotkeyPanels(Macros);
+                Macros.Clear();
+                LoadMacros();
             }
         }
     }
