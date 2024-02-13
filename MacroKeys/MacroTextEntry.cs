@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace MacroKeys
+﻿namespace MacroKeys
 {
     public partial class MacroTextEntry : Form
     {
@@ -88,7 +86,7 @@ namespace MacroKeys
             if (checkBoxCtrl.Checked) modifiedKeys += "^";
             if (checkBoxAlt.Checked) modifiedKeys += "%";
             if (checkBoxShift.Checked) modifiedKeys += "+";
-            
+
             if (textLength > 1)
             {
                 modifiedKeys += "(";

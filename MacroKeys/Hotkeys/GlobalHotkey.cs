@@ -61,7 +61,7 @@ namespace Hotkeys
 
         public override int GetHashCode()
         {
-            Debug.WriteLine($"Get hash code: mod:{modifier} key:{key} hwnd:{hWnd.ToInt32()}");
+            //Debug.WriteLine($"Get hash code: mod:{modifier} key:{key} hwnd:{hWnd.ToInt32()}");
             return modifier ^ key ^ hWnd.ToInt32();
         }
 
@@ -69,26 +69,26 @@ namespace Hotkeys
         {
             if (registered)
             {
-                Debug.WriteLine("Key is already register, release first");
+                Debug.WriteLine($"Hotkey {displayName} is already register, release first. hash code: {id}");
                 return false;
             }
             id = GetHashCode();
             if (validKey == false)
             {
                 registered = false;
-                Debug.WriteLine("Validkey false: " + key + " / " + modifier);
+                Debug.WriteLine($"Hotkey {displayName} not registered, Validkey false: key:{key}, modifiers:{modifier}");
                 return registered;
             }
             if (id != 0)
             {
                 registered = RegisterHotKey(hWnd, id, modifier, key);
-                Debug.WriteLine("Registered hotkey:" + registered.ToString() + " / " + key + " / " + modifier + " hash code: " + id);
+                Debug.WriteLine($"Registered hotkey {displayName}:{registered.ToString()} key:{key}, modifiers:{modifier} hash code: {id}");
                 return registered;
             }
             else
             {
                 registered = false;
-                Debug.WriteLine("Unknown register hotkey error: " + key + " / " + modifier + " hash code: " + id);
+                Debug.WriteLine($"Unknown error registering hotkey {displayName}: key:{key}, modifiers:{modifier} hash code: {id}");
                 return registered;
             }
         }

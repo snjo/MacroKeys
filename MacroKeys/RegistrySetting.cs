@@ -1,9 +1,6 @@
-﻿using Hotkeys;
-using MacroKeys.Properties;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System.Diagnostics;
 using System.Runtime.Versioning;
-using System.Text;
 
 namespace MacroKeys;
 [SupportedOSPlatform("windows")]
@@ -34,7 +31,7 @@ public class RegistrySetting
         {
             if (value.ToString() == "True" || value.ToString() == "False")
             {
-                value = bool.Parse(value.ToString()+"");
+                value = bool.Parse(value.ToString() + "");
             }
             Debug.WriteLine($"LoadValueFromRegistry: Loading '{name}' from registry with value: {value}");
             return value;

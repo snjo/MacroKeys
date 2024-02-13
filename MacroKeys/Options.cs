@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Diagnostics;
 
 namespace MacroKeys
 {
@@ -21,7 +12,7 @@ namespace MacroKeys
             InitializeComponent();
             Debug.WriteLine("Setting macro folder text: " + MacroFolder);
             textBoxMacroFolder.Text = macrofolder;
-            
+
             if (Autorun.Autorun.IsEnabled(MainForm.ApplicationName))
             {
                 checkBoxAutorun.Checked = true;
