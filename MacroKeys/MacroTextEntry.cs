@@ -20,7 +20,7 @@ namespace MacroKeys
 
         string[] KeysNumpad = { "NUMLOCK", "MULTIPLY", "DIVIDE", "SUBTRACT", "ADD" };
 
-        string[] KeysNav = { "TAB", "BACKSPACE", "CAPSLOCK", "ENTER", "UP", "DOWN", "LEFT", "RIGHT" };
+        string[] KeysNav = { "ENTER", "TAB", "BACKSPACE", "CAPSLOCK", "UP", "DOWN", "LEFT", "RIGHT" };
 
         string[] KeysSymbols = { "{", "}", "(", ")", "^", "+", "%", "~" };
 
@@ -34,11 +34,11 @@ namespace MacroKeys
 
             AddButtonRow(KeysFunction, shortWidth, top);
             top += buttonHeight;
-            AddButtonRow(KeysCluster, longWidth, top);
+            AddButtonRow(KeysNav, longWidth, top);
             top += buttonHeight;
             AddButtonRow(KeysNumpad, longWidth, top);
             top += buttonHeight;
-            AddButtonRow(KeysNav, longWidth, top);
+            AddButtonRow(KeysCluster, longWidth, top);
             top += buttonHeight;
             AddButtonRow(KeysSymbols, shortWidth, top);
         }

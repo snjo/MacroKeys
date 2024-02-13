@@ -14,6 +14,7 @@ namespace MacroKeys
 {
     public partial class MainForm : Form
     {
+        public static readonly string ApplicationName = "MacroKeys";
         DateTime lastKeypress = DateTime.MinValue;
         int lastMacroUsed = -1;
         List<Macro> Macros = [];
@@ -31,6 +32,8 @@ namespace MacroKeys
         public MainForm()
         {
             InitializeComponent();
+            string? folderName = RegistrySetting.LoadStringFromRegistry("Macrofolder");
+            if (folderName != null) { MacroFolder = folderName; }
             UpdateMacroFileList(MacroFolder);
             LoadMacros(MacroFiles);
             //ListMacros(Macros);
@@ -41,6 +44,7 @@ namespace MacroKeys
                 HotkeyTools.AssignGlobalHotkeyToMacro(macro, this);
                 macro.UpdateHotkey();
             }
+            Autorun.Autorun.UpdatePathIfEnabled(ApplicationName);
         }
 
         public Dictionary<string, Hotkey> HotkeyList = new Dictionary<string, Hotkey>();
@@ -295,31 +299,32 @@ namespace MacroKeys
             Close();
         }
 
-        // https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys.send?view=windowsdesktop-7.0
-
-        // https://stackoverflow.com/questions/18299216/send-special-character-with-sendkeys
-        // string txt = Regex.Replace(txt1.Text, "[+^%~()]", "{$0}");
-        // SendKeys.Send(txt);
-        //
-        // foreach (char c in pString) {
-        //   if (c.ToString() == "(")
-        //      SendKeys.SendWait("{(}");
-        //   else if (c.ToString() == ")")
-        //      SendKeys.SendWait("{)}");
-        //   else if (c.ToString() == "^")
-        //      SendKeys.SendWait("{^}");
-        //   else if (c.ToString() == "+")
-        //      SendKeys.SendWait("{+}");
-        //   else if (c.ToString() == "%")
-        //      SendKeys.SendWait("{%}");
-        //   else if (c.ToString() == "~")
-        //      SendKeys.SendWait("{~}");
-        //   else if (c.ToString() == "{")
-        //      SendKeys.SendWait("{{}");
-        //   else if (c.ToString() == "}")
-        //      SendKeys.SendWait("{}}");
-        //   else
-        //      SendKeys.SendWait(c.ToString());
-        // }
+        private void Options_Click(object sender, EventArgs e)
+        {
+            string oldMacroFolder = MacroFolder;
+            Options options = new Options(MacroFolder);
+            DialogResult result = options.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                MacroFolder = options.MacroFolder;
+                RegistrySetting.SaveSettingToRegistry("Macrofolder", MacroFolder);
+                if (options.AutorunEnabled)
+                {
+                    Autorun.Autorun.Enable(ApplicationName);
+                }
+                else
+                {
+                    Autorun.Autorun.Disable(ApplicationName);
+                }
+            }
+            if (oldMacroFolder != MacroFolder)
+            {
+                Macros.Clear();
+                UpdateMacroFileList(MacroFolder);
+                LoadMacros(MacroFiles);
+                panelMacros.Controls.Clear();
+                AddHotkeyPanels(Macros);
+            }
+        }
     }
 }

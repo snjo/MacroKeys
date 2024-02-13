@@ -37,6 +37,7 @@
             newMacroToolStripMenuItem = new ToolStripMenuItem();
             openMacroFolderToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
+            optionsToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -56,7 +57,7 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, optionsToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(487, 24);
@@ -91,6 +92,13 @@
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += ExitClick;
             // 
+            // optionsToolStripMenuItem
+            // 
+            optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            optionsToolStripMenuItem.Size = new Size(61, 20);
+            optionsToolStripMenuItem.Text = "Options";
+            optionsToolStripMenuItem.Click += Options_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -117,5 +125,6 @@
         private ToolStripMenuItem newMacroToolStripMenuItem;
         private ToolStripMenuItem openMacroFolderToolStripMenuItem;
         private ToolStripMenuItem exitToolStripMenuItem;
+        private ToolStripMenuItem optionsToolStripMenuItem;
     }
 }
