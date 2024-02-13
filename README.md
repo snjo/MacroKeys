@@ -1,4 +1,4 @@
-# ![img](img/hare32.png) MacroKeys
+# MacroKeys
 
 This application lets you set up macros, strings of keypresses to perform a task or output a text. Macros are triggered by using a keyboard hotkey.
 
