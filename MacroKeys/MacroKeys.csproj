@@ -10,7 +10,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>img\macrokeys.ico</ApplicationIcon>
     <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>C:\Github\cert\keypair.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\cert\keypair.snk</AssemblyOriginatorKeyFile>
     <Title>MacroKeys</Title>
     <Authors>Andreas Aakvik Gogstad</Authors>
     <Description>User defined hotkeys for sending key and text macros</Description>
