@@ -8,6 +8,8 @@ There are some limitations on how to write the macro you need to be aware of, li
 
 Read the sections below for more details, especially if you have encountered an error while using a hotkey or macro.
 
+![Screenshot](screenshot.png)
+
 ### No game support
 
 These macros are sent using the SendKey functions in Windows, and will only work in normal Windows applications. Most games will not recognize these keypresses, since they read the keyboard in a different way.
