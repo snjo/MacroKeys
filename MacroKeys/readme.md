@@ -100,7 +100,7 @@ The macro .txt files read each setting based on the line numbers. You can't alte
 
 Example Macro File
 
-		Don't add or remove any lines below, the line numbers are used to read the file correctly:
+		Don't add or remove any lines below (except for in ACTION), the line numbers are used to read the file correctly:
 		NAME:
 		Example, Hello
 

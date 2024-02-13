@@ -27,8 +27,24 @@ public partial class MainForm : Form
     {
         InitializeComponent();
         string? folderName = RegistrySetting.LoadStringFromRegistry("Macrofolder");
-        if (folderName != null) { MacroFolder = folderName; }
-        LoadMacros();
+        if (folderName != null)
+        {
+            MacroFolder = folderName;
+        }
+        
+        if (Directory.Exists(MacroFolder) == false)
+        {
+            DialogResult result = MessageBox.Show("No macro folder found. Do you want to open Options to configure it now?", "Set up macro folder", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                Options_Click(this, new EventArgs());
+            }
+        }
+        else
+        {
+            LoadMacros();
+        }
+        
         Autorun.Autorun.UpdatePathIfEnabled(ApplicationName);
     }
 
@@ -50,13 +66,14 @@ public partial class MainForm : Form
 
     private void UpdateMacroFileList(string folder)
     {
+        MacroFiles.Clear();
         Debug.WriteLine($"Updating macros from folder: {folder}");
         if (Directory.Exists(folder) == false)
         {
             Debug.WriteLine($"Can't find macro folder {folder}");
             return;
         }
-        MacroFiles.Clear();
+        
         string[] files = Directory.GetFiles(folder);
 
         foreach (string file in files)
