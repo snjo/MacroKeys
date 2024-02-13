@@ -48,7 +48,7 @@
             // timerDelayAction
             // 
             timerDelayAction.Interval = 10;
-            timerDelayAction.Tick += timerDelayAction_Tick;
+            timerDelayAction.Tick += TimerDelayAction_Tick;
             // 
             // panelMacros
             // 

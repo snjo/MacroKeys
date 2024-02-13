@@ -12,19 +12,16 @@ public partial class MainForm : Form
 {
     public static readonly string ApplicationName = "MacroKeys";
     DateTime lastMacro = DateTime.MinValue;
-    DateTime lastHotkey = DateTime.Now;
-    int lastMacroUsed = -1;
-    List<Macro> Macros = [];
+    readonly List<Macro> Macros = [];
     public string MacroFolder = @".\macros\";
-    int NameLine = 2;
-    int CategoryLine = 5;
-    int DescriptionLine = 8;
-    int EnabledLine = 11;
-    int KeyLine = 14;
-    int ModifiersLine = 17;
-    int WaitForModifierReleaseLine = 20;
-    // Line 7 is for Action comment, so // can be included in Action
-    int ActionLine = 23;
+    readonly int NameLine = 2;
+    readonly int CategoryLine = 5;
+    readonly int DescriptionLine = 8;
+    readonly int EnabledLine = 11;
+    readonly int KeyLine = 14;
+    readonly int ModifiersLine = 17;
+    readonly int WaitForModifierReleaseLine = 20;
+    readonly int ActionLine = 23;
 
     public MainForm()
     {
@@ -39,19 +36,17 @@ public partial class MainForm : Form
     {
         UpdateMacroFileList(MacroFolder);
         LoadMacros(MacroFiles);
-        //ListMacros(Macros);
         AddHotkeyPanels(Macros);
         foreach (Macro macro in Macros)
         {
-            //HotkeyTools.RegisterHotkeyFromMacro(this, macro);
             HotkeyTools.AssignGlobalHotkeyToMacro(macro, this);
             macro.UpdateHotkey();
         }
     }
 
-    public Dictionary<string, Hotkey> HotkeyList = new Dictionary<string, Hotkey>();
+    public Dictionary<string, Hotkey> HotkeyList = [];
 
-    List<string> MacroFiles = [];
+    readonly List<string> MacroFiles = [];
 
     private void UpdateMacroFileList(string folder)
     {
@@ -68,7 +63,6 @@ public partial class MainForm : Form
         {
             if (Path.GetExtension(file) == ".txt")
             {
-                Debug.WriteLine($"Adding macro file {file}");
                 MacroFiles.Add(file);
             }
         }
@@ -95,26 +89,27 @@ public partial class MainForm : Form
             string[] lines = File.ReadAllLines(filename);
             if (lines.Length < ActionLine + 1) return null;
 
-            Macro newMacro = new Macro(this);
-            newMacro.FileName = filename;
-            newMacro.Name = LineWithoutComment(lines, NameLine);
-            newMacro.Category = LineWithoutComment(lines, CategoryLine);
-            newMacro.Description = LineWithoutComment(lines, DescriptionLine);
-            newMacro.HotkeyEnabled = bool.Parse(LineWithoutComment(lines, EnabledLine));
-            newMacro.HotkeyKey = LineWithoutComment(lines, KeyLine);
+            Macro newMacro = new(this)
+            {
+                FileName = filename,
+                Name = LineWithoutComment(lines, NameLine),
+                Category = LineWithoutComment(lines, CategoryLine),
+                Description = LineWithoutComment(lines, DescriptionLine),
+                HotkeyEnabled = bool.Parse(LineWithoutComment(lines, EnabledLine)),
+                HotkeyKey = LineWithoutComment(lines, KeyLine)
+            };
 
             (newMacro.HotkeyCtrl, newMacro.HotkeyAlt, newMacro.HotkeyShift, newMacro.HotkeyWin) = ParseModifiers(LineWithoutComment(lines, ModifiersLine));
             newMacro.WaitForModifierRelease = LineWithoutComment(lines, WaitForModifierReleaseLine).ToLower() == "true";
 
             newMacro.Action = ReadLines(lines, ActionLine);
 
-            Debug.WriteLine($"Added macro {newMacro.Name}, in category {newMacro.Category}, {newMacro.HotkeyKey} {newMacro.HotkeyCtrl}");
             return newMacro;
         }
         return null;
     }
 
-    private string ReadLines(string[] lines, int startFromLine)
+    private static string ReadLines(string[] lines, int startFromLine)
     {
         string result = "";
         for (int i = startFromLine; i < lines.Length; i++)
@@ -128,7 +123,7 @@ public partial class MainForm : Form
         return result;
     }
 
-    private string LineWithoutComment(string[] lines, int lineNumber)
+    private static string LineWithoutComment(string[] lines, int lineNumber)
     {
         if (lineNumber >= lines.Length) return "";
         string[] split = lines[lineNumber].Split("//");
@@ -162,7 +157,7 @@ public partial class MainForm : Form
         }
     }
 
-    private (bool Ctrl, bool Alt, bool Shift, bool Win) ParseModifiers(string modifierText)
+    private static (bool Ctrl, bool Alt, bool Shift, bool Win) ParseModifiers(string modifierText)
     {
         return (modifierText.Contains("Ctrl"), modifierText.Contains("Alt"), modifierText.Contains("Shift"), modifierText.Contains("Win"));
     }
@@ -177,8 +172,8 @@ public partial class MainForm : Form
         base.WndProc(ref m);
         if (m.Msg == Hotkeys.Constants.WM_HOTKEY_MSG_ID)
         {
-            Keys key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);                  // The key of the hotkey that was pressed.
-            KeyModifier modifier = (KeyModifier)((int)m.LParam & 0xFFFF);       // The modifier of the hotkey that was pressed.
+            //Keys key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);                  // The key of the hotkey that was pressed.
+            //KeyModifier modifier = (KeyModifier)((int)m.LParam & 0xFFFF);       // The modifier of the hotkey that was pressed.
             int id = m.WParam.ToInt32();                                        // The id of the hotkey that was pressed.
             HandleHotkey(id);
         }
@@ -188,7 +183,6 @@ public partial class MainForm : Form
     {
         foreach (Macro macro in Macros)
         {
-            //Debug.WriteLine($"hotkey id {id}, macro id {macro.ghk.id}");
             if (id == macro.ghk.id)
             {
                 if (macro.WaitForModifierRelease && ModifierKeys != Keys.None)
@@ -209,9 +203,6 @@ public partial class MainForm : Form
     private void SendMacro(Macro macro)
     {
         TimeSpan timeSinceLastMacro = DateTime.Now - lastMacro;
-        TimeSpan timeSinceLastHotkey = DateTime.Now - lastHotkey;
-        //Debug.WriteLine("Since last hotkey: " + timeSinceLastHotkey.TotalMilliseconds);
-        lastHotkey = DateTime.Now;
         if (timeSinceLastMacro.TotalMilliseconds > 100)// || lastMacroUsed != id)
         {
             try
@@ -228,8 +219,6 @@ public partial class MainForm : Form
                 Debug.WriteLine("Macro Error");
             }
             lastMacro = DateTime.Now;
-            //lastMacroUsed = id;
-            //Debug.WriteLine($"sent macro {macro.Name}");
         }
         else
         {
@@ -240,7 +229,7 @@ public partial class MainForm : Form
 
     bool delayedActionActive = false;
     Macro? delayedMacro = null;
-    private void timerDelayAction_Tick(object sender, EventArgs e)
+    private void TimerDelayAction_Tick(object sender, EventArgs e)
     {
         if (delayedActionActive && delayedMacro != null)
         {
@@ -260,8 +249,7 @@ public partial class MainForm : Form
 
     private void NewMacroClick(object sender, EventArgs e)
     {
-        Macro newMacro = new Macro(this, "", true);
-        //newMacro.WaitForModifierRelease = true;
+        Macro newMacro = new (parent: this, name: "", waitForModifierRelease: true);
         Macros.Add(newMacro);
         panelMacros.Controls.Add(newMacro.hotkeyPanel);
         UpdateHotkeyPanelLocations(Macros);
@@ -276,7 +264,7 @@ public partial class MainForm : Form
         UpdateHotkeyPanelLocations(Macros);
     }
 
-    public string BrowseFolderInExplorer(string folder)
+    public static string BrowseFolderInExplorer(string folder)
     {
         if (folder.Length < 1)
         {
@@ -297,7 +285,7 @@ public partial class MainForm : Form
 
     private void OpenFolderClick(object sender, EventArgs e)
     {
-        BrowseFolderInExplorer(MacroFolder);//Path.GetFullPath(MacroFolder));
+        BrowseFolderInExplorer(MacroFolder);
     }
 
     private void ExitClick(object sender, EventArgs e)
@@ -308,7 +296,7 @@ public partial class MainForm : Form
     private void Options_Click(object sender, EventArgs e)
     {
         string oldMacroFolder = MacroFolder;
-        Options options = new Options(MacroFolder);
+        Options options = new (MacroFolder);
         DialogResult result = options.ShowDialog();
         if (result == DialogResult.OK)
         {
@@ -349,7 +337,7 @@ public partial class MainForm : Form
 
     private void About_Click(object sender, EventArgs e)
     {
-        using About about = new About();
+        using About about = new ();
         about.ShowDialog();
     }
 }
