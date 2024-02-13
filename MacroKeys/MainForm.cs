@@ -344,7 +344,7 @@ public partial class MainForm : Form
 
     private void Documentation_Click(object sender, EventArgs e)
     {
-        OpenLink("https://github.com/snjo/MacroKeys/blob/master/MacroKeys/readme.md");
+        OpenLink("https://github.com/snjo/MacroKeys/blob/master/README.md");
     }
 
     private void Website_Click(object sender, EventArgs e)
