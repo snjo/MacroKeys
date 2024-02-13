@@ -210,19 +210,19 @@ public partial class MainForm : Form
                 SendKeys.Send(macro.Action);
                 macro.MacroError = false;
                 macro.hotkeyPanel.textBoxActions.BackColor = Color.White;
-                //Debug.WriteLine("macro sent, time since last macro ended: " + timeSinceLastMacro.TotalMilliseconds);
+                //Debug.WriteLine($"macro {macro.Name} sent, action: {macro.Action}, time since last macro ended: " + timeSinceLastMacro.TotalMilliseconds);
             }
             catch
             {
                 macro.MacroError = true;
                 macro.hotkeyPanel.textBoxActions.BackColor = Color.Orange;
-                Debug.WriteLine("Macro Error");
+                Debug.WriteLine($"Macro {macro.Name} Error");
             }
             lastMacro = DateTime.Now;
         }
         else
         {
-            //Debug.WriteLine("key held? skipping macro, time since last macro: " + timeSinceLastMacro.TotalMilliseconds);
+            Debug.WriteLine($"key held? skipping macro {macro.Name}, time since last macro: {timeSinceLastMacro.TotalMilliseconds}");
         }
     }
 
