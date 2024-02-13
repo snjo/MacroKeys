@@ -7,6 +7,14 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>img\macrokeys.ico</ApplicationIcon>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>C:\Github\cert\keypair.snk</AssemblyOriginatorKeyFile>
+    <Title>MacroKeys</Title>
+    <Authors>Andreas Aakvik Gogstad</Authors>
+    <Description>User defined hotkeys for sending key and text macros</Description>
+    <PackageProjectUrl>https://github.com/snjo/MacroKeys</PackageProjectUrl>
+    <PackageIcon>hare32.png</PackageIcon>
+    <RepositoryUrl>https://github.com/snjo/MacroKeys</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +34,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="img\hare32.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Update="Macros\MacroExample.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
