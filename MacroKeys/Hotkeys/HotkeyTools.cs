@@ -1,7 +1,5 @@
 ﻿// add using for the active project's Properties here
 using MacroKeys;
-using MacroKeys.Properties;
-using System.Configuration;
 using System.Diagnostics;
 
 namespace Hotkeys
