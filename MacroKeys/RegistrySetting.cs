@@ -12,8 +12,25 @@ public class RegistrySetting
     {
         Debug.WriteLine($"LoadStringFromRegistry: Loading '{name}' as string");
         object? value = LoadValueFromRegistry(name);
-        if (value == null) { return null; }
-        if (value is string s) { return s; }
+        if (value != null && value.ToString() is string s)
+        {
+            Debug.WriteLine($"LoadStringFromRegistry: Registry value '{name}' is: {s}");
+            return s;
+        }
+        Debug.WriteLine($"LoadStringFromRegistry: Registry value '{name}' is null");
+        return null;
+    }
+
+    public static bool? LoadBoolFromRegistry(string name)
+    {
+        Debug.WriteLine($"LoadBoolFromRegistry: Loading '{name}' as bool");
+        object? value = LoadValueFromRegistry(name);
+        if (value != null && value is bool b)
+        {
+            Debug.WriteLine($"LoadBoolFromRegistry: Registry value '{name}' is: {b}");
+            return b;
+        }
+        Debug.WriteLine($"LoadBoolFromRegistry: Registry value '{name}' is null");
         return null;
     }
 

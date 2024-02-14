@@ -42,6 +42,8 @@
             documentationToolStripMenuItem = new ToolStripMenuItem();
             websiteToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
+            notifyIconSysTray = new NotifyIcon(components);
+            timerHide = new System.Windows.Forms.Timer(components);
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -131,6 +133,19 @@
             aboutToolStripMenuItem.Text = "About";
             aboutToolStripMenuItem.Click += About_Click;
             // 
+            // notifyIconSysTray
+            // 
+            notifyIconSysTray.Icon = (Icon)resources.GetObject("notifyIconSysTray.Icon");
+            notifyIconSysTray.Text = "MacroKeys";
+            notifyIconSysTray.Visible = true;
+            notifyIconSysTray.Click += NotifyIcon_Click;
+            notifyIconSysTray.DoubleClick += NotifyIcon_Click;
+            // 
+            // timerHide
+            // 
+            timerHide.Enabled = true;
+            timerHide.Tick += timerHide_Tick;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -162,5 +177,7 @@
         private ToolStripMenuItem documentationToolStripMenuItem;
         private ToolStripMenuItem websiteToolStripMenuItem;
         private ToolStripMenuItem aboutToolStripMenuItem;
+        private NotifyIcon notifyIconSysTray;
+        private System.Windows.Forms.Timer timerHide;
     }
 }

@@ -35,12 +35,13 @@
             button2 = new Button();
             button3 = new Button();
             folderBrowserDialog1 = new FolderBrowserDialog();
+            checkBoxStartHidden = new CheckBox();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(12, 43);
+            label1.Location = new Point(12, 68);
             label1.Name = "label1";
             label1.Size = new Size(75, 15);
             label1.TabIndex = 0;
@@ -58,14 +59,14 @@
             // 
             // textBoxMacroFolder
             // 
-            textBoxMacroFolder.Location = new Point(93, 40);
+            textBoxMacroFolder.Location = new Point(93, 65);
             textBoxMacroFolder.Name = "textBoxMacroFolder";
             textBoxMacroFolder.Size = new Size(277, 23);
             textBoxMacroFolder.TabIndex = 2;
             // 
             // buttonSelectFolder
             // 
-            buttonSelectFolder.Location = new Point(376, 40);
+            buttonSelectFolder.Location = new Point(376, 65);
             buttonSelectFolder.Name = "buttonSelectFolder";
             buttonSelectFolder.Size = new Size(75, 23);
             buttonSelectFolder.TabIndex = 3;
@@ -93,11 +94,22 @@
             button3.Text = "Cancel";
             button3.UseVisualStyleBackColor = true;
             // 
+            // checkBoxStartHidden
+            // 
+            checkBoxStartHidden.AutoSize = true;
+            checkBoxStartHidden.Location = new Point(12, 37);
+            checkBoxStartHidden.Name = "checkBoxStartHidden";
+            checkBoxStartHidden.Size = new Size(272, 19);
+            checkBoxStartHidden.TabIndex = 6;
+            checkBoxStartHidden.Text = "Start Hidden, and hide to tray when minimized";
+            checkBoxStartHidden.UseVisualStyleBackColor = true;
+            // 
             // Options
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(498, 164);
+            Controls.Add(checkBoxStartHidden);
             Controls.Add(button3);
             Controls.Add(button2);
             Controls.Add(buttonSelectFolder);
@@ -119,5 +131,6 @@
         private Button button2;
         private Button button3;
         private FolderBrowserDialog folderBrowserDialog1;
+        private CheckBox checkBoxStartHidden;
     }
 }

@@ -22,16 +22,28 @@ public partial class MainForm : Form
     readonly int ModifiersLine = 17;
     readonly int WaitForModifierReleaseLine = 20;
     readonly int ActionLine = 23;
+    public bool StartHidden = false;
 
     public MainForm()
     {
         InitializeComponent();
         string? folderName = RegistrySetting.LoadStringFromRegistry("Macrofolder");
+        bool? startHidden = RegistrySetting.LoadBoolFromRegistry("StartHidden");
+        Debug.WriteLine("Hidden status from registry:" + startHidden);
+        if (startHidden == true)
+        {
+            StartHidden = true;
+            HideApplication();
+        }
+        else
+        {
+            ShowApplication();
+        }
         if (folderName != null)
         {
             MacroFolder = folderName;
         }
-        
+
         if (Directory.Exists(MacroFolder) == false)
         {
             DialogResult result = MessageBox.Show("No macro folder found. Do you want to open Options to configure it now?", "Set up macro folder", MessageBoxButtons.YesNo);
@@ -44,8 +56,23 @@ public partial class MainForm : Form
         {
             LoadMacros();
         }
-        
+
         Autorun.Autorun.UpdatePathIfEnabled(ApplicationName);
+    }
+
+    private void HideApplication()
+    {
+        //Don't use this.ShowInTaskbar = true/false, it breaks hotkeys
+        Debug.WriteLine("Hiding application");
+        this.WindowState = FormWindowState.Minimized;
+        Hide();
+    }
+
+    private void ShowApplication()
+    {
+        Debug.WriteLine("Showing Application");
+        Show();
+        WindowState = FormWindowState.Normal; // setting Normal here makes it actually show up in front of other windows
     }
 
     private void LoadMacros()
@@ -73,7 +100,7 @@ public partial class MainForm : Form
             Debug.WriteLine($"Can't find macro folder {folder}");
             return;
         }
-        
+
         string[] files = Directory.GetFiles(folder);
 
         foreach (string file in files)
@@ -234,6 +261,7 @@ public partial class MainForm : Form
                 macro.MacroError = true;
                 macro.hotkeyPanel.textBoxActions.BackColor = Color.Orange;
                 Debug.WriteLine($"Macro {macro.Name} Error");
+                notifyIconSysTray.ShowBalloonTip(2000, "Macro error", $"Error in macro {macro.Name}, check that all special characters are enclosed in " + "{}, and button names are valid", ToolTipIcon.Error);
             }
             lastMacro = DateTime.Now;
         }
@@ -266,7 +294,7 @@ public partial class MainForm : Form
 
     private void NewMacroClick(object sender, EventArgs e)
     {
-        Macro newMacro = new (parent: this, name: "", waitForModifierRelease: true);
+        Macro newMacro = new(parent: this, name: "", waitForModifierRelease: true);
         Macros.Add(newMacro);
         panelMacros.Controls.Add(newMacro.hotkeyPanel);
         UpdateHotkeyPanelLocations(Macros);
@@ -313,7 +341,7 @@ public partial class MainForm : Form
     private void Options_Click(object sender, EventArgs e)
     {
         string oldMacroFolder = MacroFolder;
-        Options options = new (MacroFolder);
+        Options options = new(MacroFolder, StartHidden);
         DialogResult result = options.ShowDialog();
         if (result == DialogResult.OK)
         {
@@ -327,6 +355,8 @@ public partial class MainForm : Form
             {
                 Autorun.Autorun.Disable(ApplicationName);
             }
+            StartHidden = options.StartHidden;
+            RegistrySetting.SaveSettingToRegistry("StartHidden", StartHidden.ToString());
         }
         if (oldMacroFolder != MacroFolder)
         {
@@ -354,7 +384,23 @@ public partial class MainForm : Form
 
     private void About_Click(object sender, EventArgs e)
     {
-        using About about = new ();
+        using About about = new();
         about.ShowDialog();
+    }
+
+    private void NotifyIcon_Click(object sender, EventArgs e)
+    {
+        this.WindowState = FormWindowState.Normal;
+        Show();
+        WindowState = FormWindowState.Normal;
+    }
+
+    private void timerHide_Tick(object sender, EventArgs e)
+    {
+        if (StartHidden)
+        {
+            Hide();
+        }
+        timerHide.Stop();
     }
 }
