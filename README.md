@@ -67,7 +67,7 @@ Some characters have special meaning in the macros, and will cause modifiers to 
 The following characters MUST be enclosed, or the macro will misbehave or crash:
 \{ \} \( \) ^ + % ~
 
-Use the ... button next to the Action text to insert these characters or special keys.
+Use the Edit button next to the Action text to insert these characters or special keys.
 
 ### Modifiers
 
@@ -87,10 +87,23 @@ Output: hell[Ctrl+O] world
 
 ### Sending Keyboard keys
 
-You can send special keys, by enclosing the name of the key in \{\} brackets. The available keys are found by pressing the ... button next to the Action text box.
+You can send special keys, by enclosing the name of the key in \{\} brackets. The available keys are found by pressing the Edit button next to the Action text box.
 Examples: \{ENTER\}, \{F1\}, \{DOWN\}
 
 More info in the [Microsoft documentation](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys.send?view=windowsdesktop-8.0)
+
+## Categories
+
+Each macro can have an optional Category tag. You can use this as a reminder of what the key is for, or for enabling or disabling keys in that category
+
+### Enable or disable a macro category
+
+You can use a special code in a macro Action to turn on or off all macros in a category. Use the special code \{\[enable:Example\]\} or \{\[disable:Example\]\}.
+
+You can add this code more easily if you click the Edit button next to Action text box to insert a new Enable or Disable code. Use buttons in the "Turn category on/off" panel.
+
+		Example: You want to enable all macros you use in one application, and disable all the ones used in another
+		{[disable:Coding]}{[enable:Excel]}
 
 ## Macro files
 
@@ -129,7 +142,7 @@ Example Macro File
 
 The final lines of the file is for Action. You can add any number of lines to this section, new lines will be read as line breaks in the text (Enter key presses).
 
-The Category and Description values are currently not used by the application, but reserved for future use.
+*The Description value is currently not used by the application, but reserved for future use.*
 
 ### Macro folder
 
