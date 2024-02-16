@@ -8,7 +8,7 @@ There are some limitations on how to write the macro you need to be aware of, li
 
 Read the sections below for more details, especially if you have encountered an error while using a hotkey or macro.
 
-![Screenshot](screenshot.png)
+![Screenshot](MacroKeys/img/screenshot.png)
 
 ### No game support
 
