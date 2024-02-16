@@ -105,6 +105,12 @@ You can add this code more easily if you click the Edit button next to Action te
 		Example: You want to enable all macros you use in one application, and disable all the ones used in another
 		{[disable:Coding]}{[enable:Excel]}
 
+## Edit macro Action
+
+Press Edit next to the Action text box to open the Text Entry window, where you can insert correctly formatted code into your Action text.
+
+![Text Entry](MacroKeys/img/textentry.png)
+
 ## Macro files
 
 Each macro is stored in a .txt file in the Macros folder. You can create new macros by clicking File > New, or by adding new text files to this folder and restarting the application.
