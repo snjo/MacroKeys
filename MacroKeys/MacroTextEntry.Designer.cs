@@ -39,7 +39,14 @@
             label2 = new Label();
             textBoxModifiedKeys = new TextBox();
             label1 = new Label();
+            panel1 = new Panel();
+            buttonDisable = new Button();
+            buttonEnable = new Button();
+            textBoxCategory = new TextBox();
+            label4 = new Label();
+            label3 = new Label();
             panelAddModifiedKeys.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // textBox1
@@ -63,7 +70,7 @@
             // checkBoxCtrl
             // 
             checkBoxCtrl.AutoSize = true;
-            checkBoxCtrl.Location = new Point(3, 27);
+            checkBoxCtrl.Location = new Point(5, 27);
             checkBoxCtrl.Name = "checkBoxCtrl";
             checkBoxCtrl.Size = new Size(45, 19);
             checkBoxCtrl.TabIndex = 2;
@@ -73,7 +80,7 @@
             // checkBoxAlt
             // 
             checkBoxAlt.AutoSize = true;
-            checkBoxAlt.Location = new Point(54, 27);
+            checkBoxAlt.Location = new Point(55, 27);
             checkBoxAlt.Name = "checkBoxAlt";
             checkBoxAlt.Size = new Size(41, 19);
             checkBoxAlt.TabIndex = 3;
@@ -107,7 +114,7 @@
             // 
             // buttonAdd
             // 
-            buttonAdd.Location = new Point(81, 81);
+            buttonAdd.Location = new Point(81, 82);
             buttonAdd.Name = "buttonAdd";
             buttonAdd.Size = new Size(71, 23);
             buttonAdd.TabIndex = 8;
@@ -141,11 +148,71 @@
             label1.TabIndex = 5;
             label1.Text = "Add key(s) with modifiers";
             // 
+            // panel1
+            // 
+            panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(buttonDisable);
+            panel1.Controls.Add(buttonEnable);
+            panel1.Controls.Add(textBoxCategory);
+            panel1.Controls.Add(label4);
+            panel1.Controls.Add(label3);
+            panel1.Location = new Point(181, 236);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(164, 116);
+            panel1.TabIndex = 6;
+            // 
+            // buttonDisable
+            // 
+            buttonDisable.Location = new Point(84, 82);
+            buttonDisable.Name = "buttonDisable";
+            buttonDisable.Size = new Size(75, 23);
+            buttonDisable.TabIndex = 4;
+            buttonDisable.Text = "Disable";
+            buttonDisable.UseVisualStyleBackColor = true;
+            buttonDisable.Click += buttonDisable_Click;
+            // 
+            // buttonEnable
+            // 
+            buttonEnable.Location = new Point(6, 82);
+            buttonEnable.Name = "buttonEnable";
+            buttonEnable.Size = new Size(75, 23);
+            buttonEnable.TabIndex = 3;
+            buttonEnable.Text = "Enable";
+            buttonEnable.UseVisualStyleBackColor = true;
+            buttonEnable.Click += buttonEnable_Click;
+            // 
+            // textBoxCategory
+            // 
+            textBoxCategory.Location = new Point(6, 53);
+            textBoxCategory.Name = "textBoxCategory";
+            textBoxCategory.Size = new Size(153, 23);
+            textBoxCategory.TabIndex = 2;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(4, 28);
+            label4.Name = "label4";
+            label4.Size = new Size(91, 15);
+            label4.TabIndex = 1;
+            label4.Text = "Category name:";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label3.Location = new Point(4, 6);
+            label3.Name = "label3";
+            label3.Size = new Size(123, 15);
+            label3.TabIndex = 0;
+            label3.Text = "Turn category on/off";
+            // 
             // MacroTextEntry
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(794, 358);
+            Controls.Add(panel1);
             Controls.Add(panelAddModifiedKeys);
             Controls.Add(buttonOK);
             Controls.Add(textBox1);
@@ -154,6 +221,8 @@
             Text = "MacroTextEntry";
             panelAddModifiedKeys.ResumeLayout(false);
             panelAddModifiedKeys.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -170,5 +239,11 @@
         private Label label2;
         private TextBox textBoxModifiedKeys;
         private Label label1;
+        private Panel panel1;
+        private Button buttonDisable;
+        private Button buttonEnable;
+        private TextBox textBoxCategory;
+        private Label label4;
+        private Label label3;
     }
 }

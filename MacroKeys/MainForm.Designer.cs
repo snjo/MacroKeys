@@ -58,7 +58,7 @@
             panelMacros.Dock = DockStyle.Fill;
             panelMacros.Location = new Point(0, 24);
             panelMacros.Name = "panelMacros";
-            panelMacros.Size = new Size(487, 426);
+            panelMacros.Size = new Size(560, 483);
             panelMacros.TabIndex = 2;
             // 
             // menuStrip1
@@ -66,7 +66,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, optionsToolStripMenuItem, helpToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(487, 24);
+            menuStrip1.Size = new Size(560, 24);
             menuStrip1.TabIndex = 3;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -150,7 +150,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(487, 450);
+            ClientSize = new Size(560, 507);
             Controls.Add(panelMacros);
             Controls.Add(menuStrip1);
             Icon = (Icon)resources.GetObject("$this.Icon");

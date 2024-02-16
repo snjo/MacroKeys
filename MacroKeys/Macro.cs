@@ -8,7 +8,7 @@ namespace MacroKeys;
 
 public class Macro
 {
-    public string Name = "none";
+    public string Name = "";
     public string Description = "";
     public string Category = "";
     public string FileName = "";
@@ -30,13 +30,14 @@ public class Macro
     bool IsSaved = true;
     MainForm Parent;
 
-    public Macro(MainForm parent, string name = "", bool waitForModifierRelease = true)
+    public Macro(MainForm parent, bool waitForModifierRelease = true)
     {
         Parent = parent;
         ghk = new GlobalHotkey();
         hotkeyPanel = new HotkeyPanel(this);
-        hotkeyPanel.textBoxName.Text = name;
-        Name = name;
+        //hotkeyPanel.textBoxName.Text = name;
+        hotkeyPanel.textBoxName.Text = Name;
+        hotkeyPanel.textBoxCategory.Text = Category;
         hotkeyPanel.checkBoxWait.Checked = waitForModifierRelease;
         WaitForModifierRelease = waitForModifierRelease;
         hotkeyPanel.checkBoxEnabled.Checked = HotkeyEnabled;
@@ -45,6 +46,7 @@ public class Macro
         hotkeyPanel.checkBoxAlt.Checked = HotkeyAlt;
         hotkeyPanel.checkBoxShift.Checked = HotkeyShift;
         hotkeyPanel.checkBoxWin.Checked = HotkeyWin;
+        hotkeyPanel.textBoxCategory.Text = Category;
 
         hotkeyPanel.textBoxActions.Text = Action;
 
@@ -56,12 +58,29 @@ public class Macro
         hotkeyPanel.checkBoxWin.MouseClick += CheckboxModifierClick;
         hotkeyPanel.checkBoxWait.MouseClick += CheckboxWaitClick;
         hotkeyPanel.textBoxActions.TextChanged += ActionTextChanged;
+        hotkeyPanel.textBoxCategory.TextChanged += CategoryTextChanged;
         hotkeyPanel.comboBoxKey.TextChanged += KeyChanged;
         hotkeyPanel.buttonSave.Click += SaveClick;
         hotkeyPanel.buttonDelete.Click += DeleteClick;
         hotkeyPanel.buttonEditAction.Click += EditActionClick;
 
         UpdateSavedStatus(true);
+    }
+
+    public void Enable()
+    {
+        HotkeyEnabled = true;
+        hotkeyPanel.checkBoxEnabled.Checked = HotkeyEnabled;
+        UpdateHotkey();
+        Debug.WriteLine($"Hotkey {Name} enabled");
+    }
+
+    public void Disable()
+    {
+        HotkeyEnabled = false;
+        hotkeyPanel.checkBoxEnabled.Checked = HotkeyEnabled;
+        UpdateHotkey();
+        Debug.WriteLine($"Hotkey {Name} disabled");
     }
 
     private void EditActionClick(object? sender, EventArgs e)
@@ -181,7 +200,7 @@ public class Macro
 
     private void KeyChanged(object? sender, EventArgs e)
     {
-        Debug.WriteLine($"Key changed: index {hotkeyPanel.comboBoxKey.SelectedIndex} / key {hotkeyPanel.comboBoxKey.Text}");
+        //Debug.WriteLine($"Key changed: index {hotkeyPanel.comboBoxKey.SelectedIndex} / key {hotkeyPanel.comboBoxKey.Text}");
         HotkeyKey = hotkeyPanel.comboBoxKey.Text;
         UpdateHotkey();
         UpdateSavedStatus(false);
@@ -190,6 +209,12 @@ public class Macro
     private void ActionTextChanged(object? sender, EventArgs e)
     {
         Action = hotkeyPanel.textBoxActions.Text;
+        UpdateSavedStatus(false);
+    }
+
+    private void CategoryTextChanged(object? sender, EventArgs e)
+    {
+        Category = hotkeyPanel.textBoxCategory.Text;
         UpdateSavedStatus(false);
     }
 
@@ -272,6 +297,7 @@ public class Macro
     public void FillPanelValues()
     {
         hotkeyPanel.textBoxName.Text = Name;
+        hotkeyPanel.textBoxCategory.Text = Category;
         hotkeyPanel.textBoxActions.Text = Action;
         hotkeyPanel.checkBoxEnabled.Checked = HotkeyEnabled;
         hotkeyPanel.comboBoxKey.Text = HotkeyKey;

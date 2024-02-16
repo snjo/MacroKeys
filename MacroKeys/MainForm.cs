@@ -243,15 +243,116 @@ public partial class MainForm : Form
         }
     }
 
+    private string specialTagStart = "{[";
+    private string specialTagEnd = "]}";
+    private string ParseSpecialCommand(string actionText)
+    {
+        if (actionText.Contains(specialTagStart)) // && commandText.Contains(specialTagEnd))
+        {
+            //Debug.WriteLine($"Parsing special commands in {commandText}");
+            string remainingText = "";
+            int loopCount = 0;
+            for (int i = 0; i < actionText.Length && loopCount < 100; loopCount++) // iterate if tag end found
+            {
+                //Debug.WriteLine($"Looking for tags at index {i}");
+                int tagStart = actionText.IndexOf(specialTagStart, i);
+                if (tagStart < 0)
+                {
+                    Debug.WriteLine($"No more start tags from index {i}");
+                    remainingText += actionText[i..];
+                    break;
+                }
+                else
+                {
+                    if (tagStart > i)
+                    {
+                        string addText = actionText[i..tagStart];
+                        remainingText += addText;
+                        //Debug.WriteLine($"Tag start:{tagStart} > i:{i}, adding text between to remaining: {addText}");
+                    }
+                    int tagEnd = actionText.IndexOf(specialTagEnd, tagStart);
+                    if (tagEnd < 0)
+                    {
+                        string addText = actionText[(tagStart + specialTagStart.Length)..];
+                        //Debug.WriteLine($"No end tag after index {tagStart}, adding text {addText}");
+                        remainingText += addText;
+                        break;
+                    }
+                    else
+                    {
+                        string specialCommand = actionText.Substring(tagStart + specialTagStart.Length, tagEnd - tagStart - specialTagStart.Length);
+                        //i = tagEnd + specialTagEnd.Length - 1; // subtract 1 because i++ happens right after this in for loop
+                        i = tagEnd + specialTagEnd.Length; // subtract 1 because i++ happens right after this in for loop
+                        Debug.WriteLine($"Special command from {tagStart} to {tagEnd}: {specialCommand}, setting i to {i}");
+                        RunSpecialCommand(specialCommand);
+                    }
+                }
+            }
+            return remainingText;
+        }
+        else
+        {
+            return actionText;
+        }
+    }
+
+    private void RunSpecialCommand(string specialCommand)
+    {
+        Debug.WriteLine($"Running special command {specialCommand}");
+        if (specialCommand.Length == 0)
+        {
+            Debug.WriteLine("Special comman length is 0");
+            return;
+        }
+        string commandType = "";
+        string commandParameter = "";
+        string[] commandSplit = specialCommand.Split(':');
+        if (commandSplit.Length > 0 ) commandType = commandSplit[0];
+        if (commandSplit.Length > 1 ) commandParameter = commandSplit[1];
+        Debug.WriteLine($"special command: {commandType}, parameter {commandParameter}");
+        if (commandType.ToLower() == "enable")
+        {
+            Debug.WriteLine("Enable");
+            SetCategoryOnOff(commandParameter, true);
+        }
+        else if (commandType.ToLower() == "disable")
+        {
+            Debug.WriteLine("Disable");
+            SetCategoryOnOff(commandParameter, false);
+        }
+
+    }
+
+    private void SetCategoryOnOff(string category, bool enabled)
+    {
+        foreach (Macro macro in Macros)
+        {
+            Debug.WriteLine($"check {macro.Name}");
+            if (macro.Category.Equals(category, StringComparison.CurrentCultureIgnoreCase) || category.Equals("all", StringComparison.CurrentCultureIgnoreCase))
+            {
+                if (enabled)
+                {
+                    macro.Enable();
+                }
+                else
+                {
+                    macro.Disable();
+                }
+            }
+        }
+    }
 
     private void SendMacro(Macro macro)
     {
         TimeSpan timeSinceLastMacro = DateTime.Now - lastMacro;
+        if (macro.Action.Length == 0) return;
+        string actionText = ParseSpecialCommand(macro.Action);
+        Debug.WriteLine("Action text after removing special: " + actionText);
         if (timeSinceLastMacro.TotalMilliseconds > 100)// || lastMacroUsed != id)
         {
             try
             {
-                SendKeys.Send(macro.Action);
+                SendKeys.Send(actionText);
                 macro.MacroError = false;
                 macro.hotkeyPanel.textBoxActions.BackColor = Color.White;
                 //Debug.WriteLine($"macro {macro.Name} sent, action: {macro.Action}, time since last macro ended: " + timeSinceLastMacro.TotalMilliseconds);
@@ -294,7 +395,7 @@ public partial class MainForm : Form
 
     private void NewMacroClick(object sender, EventArgs e)
     {
-        Macro newMacro = new(parent: this, name: "", waitForModifierRelease: true);
+        Macro newMacro = new(parent: this, waitForModifierRelease: true);
         Macros.Add(newMacro);
         panelMacros.Controls.Add(newMacro.hotkeyPanel);
         UpdateHotkeyPanelLocations(Macros);
