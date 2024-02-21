@@ -56,13 +56,13 @@ If you need to output long pieces of text, it's better to use something like Sti
 
 ### Errors
 
-If there's an error during the macro output, the Action text box will turn orange. This is usually because there's a special character like () parentheses or \{\} brackets in the text that isn't part of a special key, and hasn't been enclosed in \{\} brackets.
+If there's an error during the macro output, the Action text box will turn orange. This is usually because there's a special character like () parentheses or \{\} curly braces in the text that isn't part of a special key, and hasn't been enclosed in \{\} curly braces.
 
 See the next section to correctly insert special characters.
 
 ### Special characters
 
-Some characters have special meaning in the macros, and will cause modifiers to be pressed. If you want to output these characters as text, they must be enclosed in \{\} brackets.
+Some characters have special meaning in the macros, and will cause modifiers to be pressed. If you want to output these characters as text, they must be enclosed in \{\} curly braces.
 
 The following characters MUST be enclosed, or the macro will misbehave or crash:
 \{ \} \( \) ^ + % ~
@@ -87,7 +87,7 @@ Output: hell[Ctrl+O] world
 
 ### Sending Keyboard keys
 
-You can send special keys, by enclosing the name of the key in \{\} brackets. The available keys are found by pressing the Edit button next to the Action text box.
+You can send special keys, by enclosing the name of the key in \{\} curly braces. The available keys are found by pressing the Edit button next to the Action text box.
 Examples: \{ENTER\}, \{F1\}, \{DOWN\}
 
 More info in the [Microsoft documentation](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys.send?view=windowsdesktop-8.0)
