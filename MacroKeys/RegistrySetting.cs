@@ -21,7 +21,7 @@ public class RegistrySetting
         return null;
     }
 
-    public static bool? LoadBoolFromRegistry(string name)
+    public static bool LoadBoolFromRegistry(string name, bool defaultIfNull = false)
     {
         Debug.WriteLine($"LoadBoolFromRegistry: Loading '{name}' as bool");
         object? value = LoadValueFromRegistry(name);
@@ -31,7 +31,7 @@ public class RegistrySetting
             return b;
         }
         Debug.WriteLine($"LoadBoolFromRegistry: Registry value '{name}' is null");
-        return null;
+        return defaultIfNull;
     }
 
     public static object? LoadValueFromRegistry(string name)

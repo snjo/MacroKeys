@@ -8,14 +8,16 @@ public partial class Options : Form
 {
     public string MacroFolder = "";
     public bool AutorunEnabled = false;
-    public bool StartHidden = false;
+    public bool StartMinimized = false;
+    public bool HideWhenMinimized = false;
 
-    public Options(string macrofolder, bool startHidden)
+    public Options(string macrofolder, bool startHidden, bool hideWhenMinimized)
     {
         InitializeComponent();
         Debug.WriteLine("Setting macro folder text: " + MacroFolder);
         textBoxMacroFolder.Text = macrofolder;
-        checkBoxStartHidden.Checked = startHidden;
+        checkBoxStartMinimized.Checked = startHidden;
+        checkBoxHideWhenMinimized.Checked = hideWhenMinimized;
 
         if (Autorun.Autorun.IsEnabled(MainForm.ApplicationName))
         {
@@ -36,7 +38,8 @@ public partial class Options : Form
     {
         MacroFolder = textBoxMacroFolder.Text;
         AutorunEnabled = checkBoxAutorun.Checked;
-        StartHidden = checkBoxStartHidden.Checked;
+        StartMinimized = checkBoxStartMinimized.Checked;
+        HideWhenMinimized= checkBoxHideWhenMinimized.Checked;
         DialogResult = DialogResult.OK;
     }
 }

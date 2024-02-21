@@ -35,13 +35,14 @@
             button2 = new Button();
             button3 = new Button();
             folderBrowserDialog1 = new FolderBrowserDialog();
-            checkBoxStartHidden = new CheckBox();
+            checkBoxStartMinimized = new CheckBox();
+            checkBoxHideWhenMinimized = new CheckBox();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(12, 68);
+            label1.Location = new Point(12, 91);
             label1.Name = "label1";
             label1.Size = new Size(75, 15);
             label1.TabIndex = 0;
@@ -59,14 +60,14 @@
             // 
             // textBoxMacroFolder
             // 
-            textBoxMacroFolder.Location = new Point(93, 65);
+            textBoxMacroFolder.Location = new Point(93, 88);
             textBoxMacroFolder.Name = "textBoxMacroFolder";
             textBoxMacroFolder.Size = new Size(277, 23);
             textBoxMacroFolder.TabIndex = 2;
             // 
             // buttonSelectFolder
             // 
-            buttonSelectFolder.Location = new Point(376, 65);
+            buttonSelectFolder.Location = new Point(376, 88);
             buttonSelectFolder.Name = "buttonSelectFolder";
             buttonSelectFolder.Size = new Size(75, 23);
             buttonSelectFolder.TabIndex = 3;
@@ -94,28 +95,40 @@
             button3.Text = "Cancel";
             button3.UseVisualStyleBackColor = true;
             // 
-            // checkBoxStartHidden
+            // checkBoxStartMinimized
             // 
-            checkBoxStartHidden.AutoSize = true;
-            checkBoxStartHidden.Location = new Point(12, 37);
-            checkBoxStartHidden.Name = "checkBoxStartHidden";
-            checkBoxStartHidden.Size = new Size(272, 19);
-            checkBoxStartHidden.TabIndex = 6;
-            checkBoxStartHidden.Text = "Start Hidden, and hide to tray when minimized";
-            checkBoxStartHidden.UseVisualStyleBackColor = true;
+            checkBoxStartMinimized.AutoSize = true;
+            checkBoxStartMinimized.Location = new Point(12, 37);
+            checkBoxStartMinimized.Name = "checkBoxStartMinimized";
+            checkBoxStartMinimized.Size = new Size(109, 19);
+            checkBoxStartMinimized.TabIndex = 6;
+            checkBoxStartMinimized.Text = "Start Minimized";
+            checkBoxStartMinimized.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxHideWhenMinimized
+            // 
+            checkBoxHideWhenMinimized.AutoSize = true;
+            checkBoxHideWhenMinimized.Location = new Point(12, 62);
+            checkBoxHideWhenMinimized.Name = "checkBoxHideWhenMinimized";
+            checkBoxHideWhenMinimized.Size = new Size(219, 19);
+            checkBoxHideWhenMinimized.TabIndex = 7;
+            checkBoxHideWhenMinimized.Text = "Hide to system tray when minimized";
+            checkBoxHideWhenMinimized.UseVisualStyleBackColor = true;
             // 
             // Options
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(498, 164);
-            Controls.Add(checkBoxStartHidden);
+            Controls.Add(checkBoxHideWhenMinimized);
+            Controls.Add(checkBoxStartMinimized);
             Controls.Add(button3);
             Controls.Add(button2);
             Controls.Add(buttonSelectFolder);
             Controls.Add(textBoxMacroFolder);
             Controls.Add(checkBoxAutorun);
             Controls.Add(label1);
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "Options";
             Text = "Options";
             ResumeLayout(false);
@@ -131,6 +144,7 @@
         private Button button2;
         private Button button3;
         private FolderBrowserDialog folderBrowserDialog1;
-        private CheckBox checkBoxStartHidden;
+        private CheckBox checkBoxStartMinimized;
+        private CheckBox checkBoxHideWhenMinimized;
     }
 }

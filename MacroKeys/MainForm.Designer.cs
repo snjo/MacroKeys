@@ -158,6 +158,7 @@
             Name = "MainForm";
             Text = "Macro Keys";
             FormClosing += Form1_FormClosing;
+            SizeChanged += MainForm_SizeChanged;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ResumeLayout(false);

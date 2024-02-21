@@ -22,23 +22,29 @@ public partial class MainForm : Form
     readonly int ModifiersLine = 17;
     readonly int WaitForModifierReleaseLine = 20;
     readonly int ActionLine = 23;
-    public bool StartHidden = false;
+    public bool StartMinimized = false;
+    public bool HideWhenMinimized = false;
 
     public MainForm()
     {
         InitializeComponent();
         string? folderName = RegistrySetting.LoadStringFromRegistry("Macrofolder");
-        bool? startHidden = RegistrySetting.LoadBoolFromRegistry("StartHidden");
-        Debug.WriteLine("Hidden status from registry:" + startHidden);
-        if (startHidden == true)
+        StartMinimized = RegistrySetting.LoadBoolFromRegistry("StartMinimized");
+        HideWhenMinimized = RegistrySetting.LoadBoolFromRegistry("HideWhenMinimized");
+        Debug.WriteLine("Hidden status from registry:" + StartMinimized);
+        if (StartMinimized)
         {
-            StartHidden = true;
-            HideApplication();
+            this.WindowState = FormWindowState.Minimized;
+            if (HideWhenMinimized)
+            {
+                HideApplication();
+            }
         }
         else
         {
             ShowApplication();
         }
+        
         if (folderName != null)
         {
             MacroFolder = folderName;
@@ -307,8 +313,8 @@ public partial class MainForm : Form
         string commandType = "";
         string commandParameter = "";
         string[] commandSplit = specialCommand.Split(':');
-        if (commandSplit.Length > 0 ) commandType = commandSplit[0];
-        if (commandSplit.Length > 1 ) commandParameter = commandSplit[1];
+        if (commandSplit.Length > 0) commandType = commandSplit[0];
+        if (commandSplit.Length > 1) commandParameter = commandSplit[1];
         Debug.WriteLine($"special command: {commandType}, parameter {commandParameter}");
         if (commandType.ToLower() == "enable")
         {
@@ -442,7 +448,7 @@ public partial class MainForm : Form
     private void Options_Click(object sender, EventArgs e)
     {
         string oldMacroFolder = MacroFolder;
-        Options options = new(MacroFolder, StartHidden);
+        Options options = new(MacroFolder, StartMinimized, HideWhenMinimized);
         DialogResult result = options.ShowDialog();
         if (result == DialogResult.OK)
         {
@@ -456,8 +462,11 @@ public partial class MainForm : Form
             {
                 Autorun.Autorun.Disable(ApplicationName);
             }
-            StartHidden = options.StartHidden;
-            RegistrySetting.SaveSettingToRegistry("StartHidden", StartHidden.ToString());
+            StartMinimized = options.StartMinimized;
+            HideWhenMinimized = options.HideWhenMinimized;
+
+            RegistrySetting.SaveSettingToRegistry("StartMinimized", StartMinimized.ToString());
+            RegistrySetting.SaveSettingToRegistry("HideWhenMinimized", HideWhenMinimized.ToString());
         }
         if (oldMacroFolder != MacroFolder)
         {
@@ -498,10 +507,22 @@ public partial class MainForm : Form
 
     private void timerHide_Tick(object sender, EventArgs e)
     {
-        if (StartHidden)
+        if (StartMinimized)
         {
-            Hide();
+            this.WindowState = FormWindowState.Minimized;
+            if (HideWhenMinimized)
+            {
+                Hide();
+            }
         }
         timerHide.Stop();
+    }
+
+    private void MainForm_SizeChanged(object sender, EventArgs e)
+    {
+        if (HideWhenMinimized && WindowState == FormWindowState.Minimized)
+        {
+            HideApplication();
+        }
     }
 }
