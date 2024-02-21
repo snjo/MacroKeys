@@ -45,6 +45,7 @@
             textBoxCategory = new TextBox();
             label4 = new Label();
             label3 = new Label();
+            label5 = new Label();
             panelAddModifiedKeys.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -107,7 +108,7 @@
             panelAddModifiedKeys.Controls.Add(checkBoxCtrl);
             panelAddModifiedKeys.Controls.Add(checkBoxShift);
             panelAddModifiedKeys.Controls.Add(checkBoxAlt);
-            panelAddModifiedKeys.Location = new Point(12, 236);
+            panelAddModifiedKeys.Location = new Point(182, 236);
             panelAddModifiedKeys.Name = "panelAddModifiedKeys";
             panelAddModifiedKeys.Size = new Size(163, 116);
             panelAddModifiedKeys.TabIndex = 5;
@@ -156,7 +157,7 @@
             panel1.Controls.Add(textBoxCategory);
             panel1.Controls.Add(label4);
             panel1.Controls.Add(label3);
-            panel1.Location = new Point(181, 236);
+            panel1.Location = new Point(12, 236);
             panel1.Name = "panel1";
             panel1.Size = new Size(164, 116);
             panel1.TabIndex = 6;
@@ -207,11 +208,21 @@
             label3.TabIndex = 0;
             label3.Text = "Turn category on/off";
             // 
+            // label5
+            // 
+            label5.Font = new Font("Courier New", 9F);
+            label5.Location = new Point(362, 239);
+            label5.Name = "label5";
+            label5.Size = new Size(254, 113);
+            label5.TabIndex = 7;
+            label5.Text = "Modifiers:\r\n+() Shift   ^() Ctrl   %() Alt\r\n\r\nModified key examples:\r\n+o      =   O\r\n+(ok)   =   OK\r\n^o      =   Ctrl+O";
+            // 
             // MacroTextEntry
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(794, 358);
+            Controls.Add(label5);
             Controls.Add(panel1);
             Controls.Add(panelAddModifiedKeys);
             Controls.Add(buttonOK);
@@ -245,5 +256,6 @@
         private TextBox textBoxCategory;
         private Label label4;
         private Label label3;
+        private Label label5;
     }
 }

@@ -85,20 +85,20 @@ public partial class MacroTextEntry : Form
     private void ButtonAdd_Click(object sender, EventArgs e)
     {
         int textLength = textBoxModifiedKeys.Text.Length;
-        if (textLength == 0) return;
+        //if (textLength == 0) return;
         string modifiedKeys = "";
         if (checkBoxCtrl.Checked) modifiedKeys += "^";
         if (checkBoxAlt.Checked) modifiedKeys += "%";
         if (checkBoxShift.Checked) modifiedKeys += "+";
 
-        if (textLength > 1)
+        if (textLength != 1)
         {
             modifiedKeys += "(";
         }
 
         modifiedKeys += textBoxModifiedKeys.Text;
 
-        if (textLength > 1)
+        if (textLength != 1)
         {
             modifiedKeys += ")";
         }
