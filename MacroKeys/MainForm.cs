@@ -1,6 +1,7 @@
 using Hotkeys;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
 [assembly: AssemblyVersion("1.1.*")]
@@ -10,6 +11,15 @@ namespace MacroKeys;
 
 public partial class MainForm : Form
 {
+    [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+    public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, uint dwExtraInfo);
+    private const int MOUSEEVENTF_LEFTDOWN = 0x02;
+    private const int MOUSEEVENTF_LEFTUP = 0x04;
+    private const int MOUSEEVENTF_RIGHTDOWN = 0x08;
+    private const int MOUSEEVENTF_RIGHTUP = 0x10;
+    private const int MOUSEEVENTF_MIDDLEDOWN = 0x20;
+    private const int MOUSEEVENTF_MIDDLEUP = 0x40;
+
     public static readonly string ApplicationName = "MacroKeys";
     DateTime lastMacro = DateTime.MinValue;
     readonly List<Macro> Macros = [];
@@ -326,7 +336,79 @@ public partial class MainForm : Form
             Debug.WriteLine("Disable");
             SetCategoryOnOff(commandParameter, false);
         }
+        else if (commandType.ToLower().Contains("mxy"))
+        {
+            string[] msplit = commandType.Split(',');
+            if (msplit.Length >= 3)
+            {
+                bool mposValid = true;
+                if (int.TryParse(msplit[1], out int mx) == false) mposValid = false;
+                if (int.TryParse(msplit[2], out int my) == false) mposValid = false;
+                if (mposValid)
+                {
+                    Debug.WriteLine($"Move mouse to {mx}, {my}");
+                    Cursor.Position = new Point(mx, my);
+                }
+            }
+        }
+        else if(commandType.ToLower() == "m1")
+        {
+            ClickMouseAtCurrentPos(1, true, true);
+        }
+        else if (commandType.ToLower() == "m2")
+        {
+            ClickMouseAtCurrentPos(2, true, true);
+        }
+    }
 
+    private void ClickMouseAtCurrentPos(int buttonNumber, bool down, bool up, bool SetClickPosition = false, int clickX = 0, int clickY = 0)
+    {
+        uint buttonDown = 0;
+        uint buttonUp = 0;
+
+        uint X = (uint)Cursor.Position.X;
+        uint Y = (uint)Cursor.Position.Y;
+        if (SetClickPosition)
+        {
+            X = (uint)clickX;
+            Y = (uint)clickY;
+        }
+
+        if (buttonNumber == 1)
+        {
+            buttonDown = MOUSEEVENTF_LEFTDOWN;
+            buttonUp = MOUSEEVENTF_LEFTUP;
+            Debug.WriteLine("Left click");
+        }
+        else if (buttonNumber == 2)
+        {
+            buttonDown = MOUSEEVENTF_RIGHTDOWN;
+            buttonUp = MOUSEEVENTF_RIGHTUP;
+            Debug.WriteLine("Right click");
+        }
+        else if (buttonNumber == 3)
+        {
+            buttonDown = MOUSEEVENTF_MIDDLEDOWN;
+            buttonUp = MOUSEEVENTF_MIDDLEUP;
+            Debug.WriteLine("Middle click");
+        }
+        uint presses = 0;
+        if (buttonDown > 0 && buttonUp > 0)
+        {
+            presses = buttonDown | buttonUp;
+        }
+        else if (buttonDown > 0)
+        {
+            presses = buttonDown;
+        }
+        else if (buttonUp > 0)
+        {
+            presses = buttonUp;
+        }
+        if (presses > 0)
+        {
+            mouse_event(presses, X, Y, 0, 0);
+        }
     }
 
     private void SetCategoryOnOff(string category, bool enabled)
