@@ -92,6 +92,28 @@ Examples: \{ENTER\}, \{F1\}, \{DOWN\}
 
 More info in the [Microsoft documentation](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys.send?view=windowsdesktop-8.0)
 
+## Delaying actions
+
+You can add delays to the macro output with the Delay command, and specifying a number of milliseconds to delay the next action.
+
+		Example:
+		{[delay500]}		Delays by half a second
+		{[delay1000]}		Delays by one second
+	
+## Mouse output
+
+You can move the mouse or perform clicks.
+- m1	Left click
+- m2	Right click
+- m3	Middle click
+- mxy	Set the mouse cursos position. Use commas to separate the command, x and y values.
+- mxyr	Move the mouse cursos (relative mouse position)
+
+		Example:
+  		{[m1]}			Left click
+		{[mxy,200,350]}		Moves the mouse cursos to X200 Y350
+  		{[mxy,10,-50]}		Moves the mouse cursos left 10px and up 50px from the its current position
+
 ## Categories
 
 Each macro can have an optional Category tag. You can use this as a reminder of what the key is for, or for enabling or disabling keys in that category
