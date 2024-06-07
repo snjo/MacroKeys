@@ -12,20 +12,20 @@ namespace MacroKeys;
 public partial class MainForm : Form
 {
     [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-    public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, uint dwExtraInfo);
+    private static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, uint dwExtraInfo);
     private const int MOUSEEVENTF_LEFTDOWN = 0x02;
     private const int MOUSEEVENTF_LEFTUP = 0x04;
     private const int MOUSEEVENTF_RIGHTDOWN = 0x08;
     private const int MOUSEEVENTF_RIGHTUP = 0x10;
     private const int MOUSEEVENTF_MIDDLEDOWN = 0x20;
     private const int MOUSEEVENTF_MIDDLEUP = 0x40;
-    private const int MOUSEEVENTF_ABSOLUTE = 0x8000;
+    //private const int MOUSEEVENTF_ABSOLUTE = 0x8000;
 
 
     public static readonly string ApplicationName = "MacroKeys";
     DateTime lastMacro = DateTime.MinValue;
     readonly List<Macro> Macros = [];
-    private List<MacroChunk> MacroChunks = [];
+    private readonly List<MacroChunk> MacroChunks = [];
     public string MacroFolder = @".\macros\";
     readonly int NameLine = 2;
     readonly int CategoryLine = 5;
@@ -163,7 +163,7 @@ public partial class MainForm : Form
             };
 
             (newMacro.HotkeyCtrl, newMacro.HotkeyAlt, newMacro.HotkeyShift, newMacro.HotkeyWin) = ParseModifiers(LineWithoutComment(lines, ModifiersLine));
-            newMacro.WaitForModifierRelease = LineWithoutComment(lines, WaitForModifierReleaseLine).ToLower() == "true";
+            newMacro.WaitForModifierRelease = LineWithoutComment(lines, WaitForModifierReleaseLine).Equals("true", StringComparison.CurrentCultureIgnoreCase);
 
             newMacro.Action = ReadLines(lines, ActionLine);
 
@@ -244,7 +244,7 @@ public partial class MainForm : Form
 
     private void HandleHotkey(int id)
     {
-        
+
         foreach (Macro macro in Macros)
         {
             if (id == macro.ghk.id)
@@ -287,7 +287,7 @@ public partial class MainForm : Form
                 Debug.WriteLine($"Adding stuff before first delay: '{firstText}', adding {foundStart} to index {index}");
                 // add anything before the first delay
                 MacroChunks.Add(new MacroChunk(firstText, 0));
-                index+=foundStart;
+                index += foundStart;
             }
             else if (foundStart == -1)
             {
@@ -308,15 +308,15 @@ public partial class MainForm : Form
                 }
 
                 string timeText = chunk[delayTag.Length..foundEnd];
-                int nextDelay = chunk.IndexOf(delayTag,1);
+                int nextDelay = chunk.IndexOf(delayTag, 1);
                 string chunkAction;
                 if (int.TryParse(timeText.Trim(), out int time))
                 {
                     Debug.WriteLine($"nextDelay {nextDelay}");
-                    
+
                     if (nextDelay > 0)
                     {
-                        
+
                         chunkAction = chunk[(foundEnd + 2)..nextDelay];
                     }
                     else
@@ -333,7 +333,7 @@ public partial class MainForm : Form
                     return;
                 }
                 Debug.WriteLine($"Adding {foundEnd} and chunk lenght {chunkAction.Length} + 2 to index {index}");
-                index += foundEnd+chunkAction.Length+2;
+                index += foundEnd + chunkAction.Length + 2;
                 Debug.WriteLine($"new index {index}");
             }
         }
@@ -341,13 +341,13 @@ public partial class MainForm : Form
         if (MacroChunks.Count > 0)
         {
             CurrentMacroChunk = 0;
-            MacroChunksRunning = true;
+            //MacroChunksRunning = true;
             CurrentMacro = macro;
             NextMacroChunk(macro);
         }
     }
 
-    private bool MacroChunksRunning = false;
+    //private bool MacroChunksRunning = false;
     int CurrentMacroChunk = 0;
     Macro? CurrentMacro = null;
     private void NextMacroChunk(Macro macro)
@@ -357,7 +357,7 @@ public partial class MainForm : Form
         if (CurrentMacroChunk < MacroChunks.Count)
         {
             Debug.WriteLine($"Running macro {macro.Name} chunk {CurrentMacroChunk}: {MacroChunks[CurrentMacroChunk].Text}");
-            
+
             timerMacroChunkDelay.Interval = Math.Max(MacroChunks[CurrentMacroChunk].Delay, 10);
             timerMacroChunkDelay.Start();
         }
@@ -382,12 +382,12 @@ public partial class MainForm : Form
     {
         timerMacroChunkDelay.Stop();
         MacroChunks.Clear();
-        MacroChunksRunning = false;
+        //MacroChunksRunning = false;
         Debug.WriteLine("Stopping macro chunk output");
     }
 
-    private string specialTagStart = "{[";
-    private string specialTagEnd = "]}";
+    private readonly string specialTagStart = "{[";
+    private readonly string specialTagEnd = "]}";
     private string ParseSpecialCommand(string actionText)
     {
         if (actionText.Contains(specialTagStart)) // && commandText.Contains(specialTagEnd))
@@ -453,20 +453,20 @@ public partial class MainForm : Form
         if (commandSplit.Length > 0) commandType = commandSplit[0];
         if (commandSplit.Length > 1) commandParameter = commandSplit[1];
         Debug.WriteLine($"special command: {commandType}, parameter {commandParameter}");
-        if (commandType.ToLower() == "enable")
+        if (commandType.Equals("enable", StringComparison.CurrentCultureIgnoreCase))
         {
             Debug.WriteLine("Enable");
             SetCategoryOnOff(commandParameter, true);
         }
-        else if (commandType.ToLower() == "disable")
+        else if (commandType.Equals("disable", StringComparison.CurrentCultureIgnoreCase))
         {
             Debug.WriteLine("Disable");
             SetCategoryOnOff(commandParameter, false);
         }
-        else if (commandType.ToLower().Contains("mxy"))
+        else if (commandType.Contains("mxy", StringComparison.CurrentCultureIgnoreCase))
         {
             bool absolute = true;
-            if (commandType.ToLower().Contains("mxyr"))
+            if (commandType.Contains("mxyr", StringComparison.CurrentCultureIgnoreCase))
             {
                 absolute = false;
             }
@@ -490,17 +490,21 @@ public partial class MainForm : Form
                 }
             }
         }
-        else if (commandType.ToLower() == "m1")
+        else if (commandType.Equals("m1", StringComparison.CurrentCultureIgnoreCase))
         {
             MouseClickEvent(1, true, true);
         }
-        else if (commandType.ToLower() == "m2")
+        else if (commandType.Equals("m2", StringComparison.CurrentCultureIgnoreCase))
         {
             MouseClickEvent(2, true, true);
         }
+        else if (commandType.Equals("m3", StringComparison.CurrentCultureIgnoreCase))
+        {
+            MouseClickEvent(3, true, true);
+        }
     }
 
-    private void MouseClickEvent(int buttonNumber, bool down, bool up)
+    private static void MouseClickEvent(int buttonNumber, bool down, bool up)
     {
         uint buttonDown = 0;
         uint buttonUp = 0;
@@ -525,7 +529,7 @@ public partial class MainForm : Form
         }
         uint presses = 0;
         if (down) presses = buttonDown;
-        if (up) presses = presses | buttonUp;
+        if (up) presses |= buttonUp;
 
         if (presses > 0)
         {
@@ -732,7 +736,7 @@ public partial class MainForm : Form
         WindowState = FormWindowState.Normal;
     }
 
-    private void timerHide_Tick(object sender, EventArgs e)
+    private void TimerHide_Tick(object sender, EventArgs e)
     {
         if (StartMinimized)
         {

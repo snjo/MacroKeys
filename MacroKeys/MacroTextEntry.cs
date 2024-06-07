@@ -143,6 +143,6 @@ public partial class MacroTextEntry : Form
         {
             AddTextAtCaret("{[m" + button.Tag?.ToString() + "]}");
         }
-        
+
     }
 }

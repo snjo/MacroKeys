@@ -39,7 +39,7 @@ public partial class Options : Form
         MacroFolder = textBoxMacroFolder.Text;
         AutorunEnabled = checkBoxAutorun.Checked;
         StartMinimized = checkBoxStartMinimized.Checked;
-        HideWhenMinimized= checkBoxHideWhenMinimized.Checked;
+        HideWhenMinimized = checkBoxHideWhenMinimized.Checked;
         DialogResult = DialogResult.OK;
     }
 }

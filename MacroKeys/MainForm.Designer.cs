@@ -145,7 +145,7 @@
             // timerHide
             // 
             timerHide.Enabled = true;
-            timerHide.Tick += timerHide_Tick;
+            timerHide.Tick += TimerHide_Tick;
             // 
             // timerMacroChunkDelay
             // 

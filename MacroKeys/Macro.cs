@@ -21,14 +21,14 @@ public class Macro
     public bool HotkeyShift;
     public bool HotkeyWin;
     public bool WaitForModifierRelease;
-    public Hotkeys.Hotkey hotkey = new Hotkeys.Hotkey();
+    public Hotkeys.Hotkey hotkey = new();
     public GlobalHotkey ghk;
     public bool HotkeyError = false;
     public bool MacroError = false;
     public HotkeyPanel hotkeyPanel;
     public bool setupDone = false;
-    bool IsSaved = true;
-    MainForm Parent;
+    //bool IsSaved = true;
+    readonly MainForm Parent;
 
     public Macro(MainForm parent, bool waitForModifierRelease = true)
     {
@@ -85,7 +85,7 @@ public class Macro
 
     private void EditActionClick(object? sender, EventArgs e)
     {
-        MacroTextEntry textEntry = new MacroTextEntry(Action);
+        MacroTextEntry textEntry = new(Action);
         DialogResult result = textEntry.ShowDialog();
         if (result == DialogResult.OK)
         {
@@ -119,9 +119,11 @@ public class Macro
     {
         if (FileName == "")
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.InitialDirectory = Path.GetFullPath(Parent.MacroFolder);
-            saveFileDialog.Filter = "Text File|*.txt|All Files|*.*";
+            SaveFileDialog saveFileDialog = new()
+            {
+                InitialDirectory = Path.GetFullPath(Parent.MacroFolder),
+                Filter = "Text File|*.txt|All Files|*.*"
+            };
             if (Name.Length > 0)
             {
                 saveFileDialog.FileName = Name;
@@ -141,7 +143,7 @@ public class Macro
 
     private void UpdateSavedStatus(bool isSaved)
     {
-        IsSaved = isSaved;
+        //IsSaved = isSaved;
         hotkeyPanel.buttonSave.Enabled = !isSaved;
     }
 
@@ -151,7 +153,7 @@ public class Macro
         if (Directory.Exists(dir))
         {
             Debug.WriteLine("Saving to Directory " + filename);
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             stringBuilder.AppendLine("Don't add or remove any lines below, the line numbers are used to read the file correctly:");  // Line 0
 
             stringBuilder.AppendLine("NAME:");                                              // Line 1

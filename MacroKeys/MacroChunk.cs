@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace MacroKeys;
 
-namespace MacroKeys;
-
-internal struct MacroChunk
+internal struct MacroChunk(string text, int delay)
 {
-    public string Text;
-    public int Delay;
-
-    public MacroChunk(string text, int delay)
-    {
-        Text = text;
-        Delay = delay;
-    }
+    public string Text = text;
+    public int Delay = delay;
 }
