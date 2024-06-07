@@ -76,14 +76,14 @@ To output keys with modifiers, use a special character before the key. If you wa
 - Alt: %
 - Shift: +
 
-Example: +hello world
-Output: Hello world
-
-Example +(hello) world
-Output: HELLO world
-
-Example: hell^o world
-Output: hell[Ctrl+O] world
+		Example: +hello world
+		Output: Hello world
+		
+		Example +(hello) world
+		Output: HELLO world
+		
+		Example: hell^o world
+		Output: hell[Ctrl+O] world
 
 ### Sending Keyboard keys
 
@@ -94,11 +94,13 @@ More info in the [Microsoft documentation](https://learn.microsoft.com/en-us/dot
 
 ## Delaying actions
 
-You can add delays to the macro output with the Delay command, and specifying a number of milliseconds to delay the next action.
+You can add delays to the macro output with the "delay" command, and specifying a number of milliseconds to delay the next action.
 
 		Example:
 		{[delay500]}		Delays by half a second
 		{[delay1000]}		Delays by one second
+  		{[delay 1000]}		Delays by one second, the space is optional
+    
 	
 ## Mouse output
 
@@ -113,6 +115,8 @@ You can move the mouse or perform clicks.
   		{[m1]}			Left click
 		{[mxy,200,350]}		Moves the mouse cursos to X200 Y350
   		{[mxy,10,-50]}		Moves the mouse cursos left 10px and up 50px from the its current position
+
+    		{[m2]}{[delay200]}{[mxyr,10,50]}{[m1]}		Right clicks, then moves down and left clicks
 
 ## Categories
 
