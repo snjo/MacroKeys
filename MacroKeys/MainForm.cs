@@ -19,10 +19,13 @@ public partial class MainForm : Form
     private const int MOUSEEVENTF_RIGHTUP = 0x10;
     private const int MOUSEEVENTF_MIDDLEDOWN = 0x20;
     private const int MOUSEEVENTF_MIDDLEUP = 0x40;
+    private const int MOUSEEVENTF_ABSOLUTE = 0x8000;
+
 
     public static readonly string ApplicationName = "MacroKeys";
     DateTime lastMacro = DateTime.MinValue;
     readonly List<Macro> Macros = [];
+    private List<MacroChunk> MacroChunks = [];
     public string MacroFolder = @".\macros\";
     readonly int NameLine = 2;
     readonly int CategoryLine = 5;
@@ -54,7 +57,7 @@ public partial class MainForm : Form
         {
             ShowApplication();
         }
-        
+
         if (folderName != null)
         {
             MacroFolder = folderName;
@@ -241,10 +244,12 @@ public partial class MainForm : Form
 
     private void HandleHotkey(int id)
     {
+        
         foreach (Macro macro in Macros)
         {
             if (id == macro.ghk.id)
             {
+                Debug.WriteLine($"hotkey pressed, id {id}, macro {macro.Name} id {macro.ghk.id}");
                 if (macro.WaitForModifierRelease && ModifierKeys != Keys.None)
                 {
                     delayedActionActive = true;
@@ -253,10 +258,132 @@ public partial class MainForm : Form
                 }
                 else
                 {
-                    SendMacro(macro);
+                    PrepareMacroChunks(macro);
                 }
             }
         }
+    }
+
+    private void PrepareMacroChunks(Macro macro)
+    {
+        string delayTag = "{[delay";
+        MacroChunks.Clear();
+        timerMacroChunkDelay.Stop();
+
+        if (macro.Action.Length == 0)
+        {
+            StopMacroChunks();
+        }
+
+        int index = 0;
+        while (index < macro.Action.Length)
+        {
+            string chunk = macro.Action[index..];
+            int foundStart = chunk.IndexOf(delayTag);
+            Debug.WriteLine($"index {index}: found start {foundStart}");
+            if (index == 0 && foundStart > 0)
+            {
+                string firstText = chunk[..foundStart];
+                Debug.WriteLine($"Adding stuff before first delay: '{firstText}', adding {foundStart} to index {index}");
+                // add anything before the first delay
+                MacroChunks.Add(new MacroChunk(firstText, 0));
+                index+=foundStart;
+            }
+            else if (foundStart == -1)
+            {
+                // add whatever's left
+                Debug.WriteLine($"Adding what's left: '{chunk}'");
+                MacroChunks.Add(new MacroChunk(chunk, 0));
+                break;
+            }
+            else
+            {
+                int foundEnd = chunk.IndexOf("]}");
+                Debug.WriteLine($"Found tag end in chunk at {foundEnd}, text: '{chunk}'");
+                if (foundEnd == -1)
+                {
+                    Debug.WriteLine("Error in delay tag");
+                    MacroError(macro);
+                    return;
+                }
+
+                string timeText = chunk[delayTag.Length..foundEnd];
+                int nextDelay = chunk.IndexOf(delayTag,1);
+                string chunkAction;
+                if (int.TryParse(timeText, out int time))
+                {
+                    Debug.WriteLine($"nextDelay {nextDelay}");
+                    
+                    if (nextDelay > 0)
+                    {
+                        
+                        chunkAction = chunk[(foundEnd + 2)..nextDelay];
+                    }
+                    else
+                    {
+                        chunkAction = chunk[(foundEnd + 2)..];
+                    }
+                    Debug.WriteLine($"Adding chunk {MacroChunks.Count}: delay:{time}, action:'{chunkAction}'");
+                    MacroChunks.Add(new MacroChunk(chunkAction, time));
+                }
+                else
+                {
+                    Debug.WriteLine($"Delay time is invalid: '{timeText}', aborting macro");
+                    MacroError(macro);
+                    return;
+                }
+                Debug.WriteLine($"Adding {foundEnd} and chunk lenght {chunkAction.Length} + 2 to index {index}");
+                index += foundEnd+chunkAction.Length+2;
+                Debug.WriteLine($"new index {index}");
+            }
+        }
+
+        if (MacroChunks.Count > 0)
+        {
+            CurrentMacroChunk = 0;
+            MacroChunksRunning = true;
+            CurrentMacro = macro;
+            NextMacroChunk(macro);
+        }
+    }
+
+    private bool MacroChunksRunning = false;
+    int CurrentMacroChunk = 0;
+    Macro? CurrentMacro = null;
+    private void NextMacroChunk(Macro macro)
+    {
+        Debug.WriteLine("\n---CHUNK---");
+        timerMacroChunkDelay.Stop();
+        if (CurrentMacroChunk < MacroChunks.Count)
+        {
+            Debug.WriteLine($"Running macro {macro.Name} chunk {CurrentMacroChunk}: {MacroChunks[CurrentMacroChunk].Text}");
+            
+            timerMacroChunkDelay.Interval = Math.Max(MacroChunks[CurrentMacroChunk].Delay, 10);
+            timerMacroChunkDelay.Start();
+        }
+        else
+        {
+            StopMacroChunks();
+        }
+        //CurrentMacroChunk++;
+    }
+
+    private void TimerMacroChunkTick(object sender, EventArgs e)
+    {
+        if (CurrentMacro != null)
+        {
+            SendMacro(CurrentMacro, MacroChunks[CurrentMacroChunk].Text, preventRepeat: false);
+            CurrentMacroChunk++;
+            NextMacroChunk(CurrentMacro);
+        }
+    }
+
+    private void StopMacroChunks()
+    {
+        timerMacroChunkDelay.Stop();
+        MacroChunks.Clear();
+        MacroChunksRunning = false;
+        Debug.WriteLine("Stopping macro chunk output");
     }
 
     private string specialTagStart = "{[";
@@ -338,6 +465,11 @@ public partial class MainForm : Form
         }
         else if (commandType.ToLower().Contains("mxy"))
         {
+            bool absolute = true;
+            if (commandType.ToLower().Contains("mxyr"))
+            {
+                absolute = false;
+            }
             string[] msplit = commandType.Split(',');
             if (msplit.Length >= 3)
             {
@@ -347,32 +479,31 @@ public partial class MainForm : Form
                 if (mposValid)
                 {
                     Debug.WriteLine($"Move mouse to {mx}, {my}");
-                    Cursor.Position = new Point(mx, my);
+                    if (absolute)
+                    {
+                        Cursor.Position = new Point(mx, my);
+                    }
+                    else
+                    {
+                        Cursor.Position = new Point(mx + Cursor.Position.X, my + Cursor.Position.Y);
+                    }
                 }
             }
         }
-        else if(commandType.ToLower() == "m1")
+        else if (commandType.ToLower() == "m1")
         {
-            ClickMouseAtCurrentPos(1, true, true);
+            MouseClickEvent(1, true, true);
         }
         else if (commandType.ToLower() == "m2")
         {
-            ClickMouseAtCurrentPos(2, true, true);
+            MouseClickEvent(2, true, true);
         }
     }
 
-    private void ClickMouseAtCurrentPos(int buttonNumber, bool down, bool up, bool SetClickPosition = false, int clickX = 0, int clickY = 0)
+    private void MouseClickEvent(int buttonNumber, bool down, bool up)
     {
         uint buttonDown = 0;
         uint buttonUp = 0;
-
-        uint X = (uint)Cursor.Position.X;
-        uint Y = (uint)Cursor.Position.Y;
-        if (SetClickPosition)
-        {
-            X = (uint)clickX;
-            Y = (uint)clickY;
-        }
 
         if (buttonNumber == 1)
         {
@@ -393,21 +524,12 @@ public partial class MainForm : Form
             Debug.WriteLine("Middle click");
         }
         uint presses = 0;
-        if (buttonDown > 0 && buttonUp > 0)
-        {
-            presses = buttonDown | buttonUp;
-        }
-        else if (buttonDown > 0)
-        {
-            presses = buttonDown;
-        }
-        else if (buttonUp > 0)
-        {
-            presses = buttonUp;
-        }
+        if (down) presses = buttonDown;
+        if (up) presses = presses | buttonUp;
+
         if (presses > 0)
         {
-            mouse_event(presses, X, Y, 0, 0);
+            mouse_event(presses, 0, 0, 0, 0);
         }
     }
 
@@ -430,13 +552,31 @@ public partial class MainForm : Form
         }
     }
 
-    private void SendMacro(Macro macro)
+    private void SendMacro(Macro macro, string action, bool preventRepeat)
     {
+        string actionText;
         TimeSpan timeSinceLastMacro = DateTime.Now - lastMacro;
-        if (macro.Action.Length == 0) return;
-        string actionText = ParseSpecialCommand(macro.Action);
+        if (macro == null)
+        {
+            Debug.WriteLine("Macro is null");
+            return;
+        }
+        if (macro.Action.Length == 0)
+        {
+            StopMacroChunks();
+            return;
+        }
+        actionText = ParseSpecialCommand(action);
+        //if (action.Length > 0)
+        //{
+        //    actionText = ParseSpecialCommand(action);
+        //}
+        //else
+        //{
+        //    actionText = ParseSpecialCommand(macro.Action);
+        //}
         Debug.WriteLine("Action text after removing special: " + actionText);
-        if (timeSinceLastMacro.TotalMilliseconds > 100)// || lastMacroUsed != id)
+        if (timeSinceLastMacro.TotalMilliseconds > 100 || preventRepeat == false)// || lastMacroUsed != id)
         {
             try
             {
@@ -447,10 +587,7 @@ public partial class MainForm : Form
             }
             catch
             {
-                macro.MacroError = true;
-                macro.hotkeyPanel.textBoxActions.BackColor = Color.Orange;
-                Debug.WriteLine($"Macro {macro.Name} Error");
-                notifyIconSysTray.ShowBalloonTip(2000, "Macro error", $"Error in macro {macro.Name}, check that all special characters are enclosed in " + "{}, and button names are valid", ToolTipIcon.Error);
+                MacroError(macro);
             }
             lastMacro = DateTime.Now;
         }
@@ -460,6 +597,13 @@ public partial class MainForm : Form
         }
     }
 
+    private void MacroError(Macro macro)
+    {
+        macro.MacroError = true;
+        macro.hotkeyPanel.textBoxActions.BackColor = Color.Orange;
+        Debug.WriteLine($"Macro {macro.Name} Error");
+        notifyIconSysTray.ShowBalloonTip(2000, "Macro error", $"Error in macro {macro.Name}, check that all special characters are enclosed in " + "{}, and button names are valid", ToolTipIcon.Error);
+    }
 
     bool delayedActionActive = false;
     Macro? delayedMacro = null;
@@ -471,7 +615,8 @@ public partial class MainForm : Form
             {
                 timerDelayAction.Stop();
                 delayedActionActive = false;
-                SendMacro(delayedMacro);
+                PrepareMacroChunks(delayedMacro);
+                //SendMacro(delayedMacro);
                 delayedMacro = null;
             }
         }

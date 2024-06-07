@@ -44,6 +44,7 @@
             aboutToolStripMenuItem = new ToolStripMenuItem();
             notifyIconSysTray = new NotifyIcon(components);
             timerHide = new System.Windows.Forms.Timer(components);
+            timerMacroChunkDelay = new System.Windows.Forms.Timer(components);
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -146,6 +147,10 @@
             timerHide.Enabled = true;
             timerHide.Tick += timerHide_Tick;
             // 
+            // timerMacroChunkDelay
+            // 
+            timerMacroChunkDelay.Tick += TimerMacroChunkTick;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -180,5 +185,6 @@
         private ToolStripMenuItem aboutToolStripMenuItem;
         private NotifyIcon notifyIconSysTray;
         private System.Windows.Forms.Timer timerHide;
+        private System.Windows.Forms.Timer timerMacroChunkDelay;
     }
 }
