@@ -310,7 +310,7 @@ public partial class MainForm : Form
                 string timeText = chunk[delayTag.Length..foundEnd];
                 int nextDelay = chunk.IndexOf(delayTag,1);
                 string chunkAction;
-                if (int.TryParse(timeText, out int time))
+                if (int.TryParse(timeText.Trim(), out int time))
                 {
                     Debug.WriteLine($"nextDelay {nextDelay}");
                     
