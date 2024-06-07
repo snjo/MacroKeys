@@ -121,4 +121,28 @@ public partial class MacroTextEntry : Form
     {
         AddTextAtCaret("{[disable:" + textBoxCategory.Text + "]}");
     }
+
+    private void ButtonAddDelay_Click(object sender, EventArgs e)
+    {
+        AddTextAtCaret("{[delay" + numericDelay.Value + "]}");
+    }
+
+    private void ButtonAddMouseMove_Click(object sender, EventArgs e)
+    {
+        AddTextAtCaret("{[mxyr," + numericMouseMoveX.Value + "," + numericMouseMoveY.Value + "]}");
+    }
+
+    private void ButtonAddMousePosition_Click(object sender, EventArgs e)
+    {
+        AddTextAtCaret("{[mxy," + numericMousePositionX.Value + "," + numericMousePositionY.Value + "]}");
+    }
+
+    private void ButtonAddMouseClick_Click(object sender, EventArgs e)
+    {
+        if (sender is Button button)
+        {
+            AddTextAtCaret("{[m" + button.Tag?.ToString() + "]}");
+        }
+        
+    }
 }
