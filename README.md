@@ -112,11 +112,11 @@ You can move the mouse or perform clicks.
 - mxyr	Move the mouse cursos (relative mouse position)
 
 		Example:
-  		{[m1]}			Left click
+		{[m1]}			Left click
 		{[mxy,200,350]}		Moves the mouse cursos to X200 Y350
-  		{[mxy,10,-50]}		Moves the mouse cursos left 10px and up 50px from the its current position
+		{[mxyr,10,-50]}		Moves the mouse cursos left 10px and up 50px from the its current position
 
-    		{[m2]}{[delay200]}{[mxyr,10,50]}{[m1]}		Right clicks, then moves down and left clicks
+		{[m2]}{[delay200]}{[mxyr,10,50]}{[m1]}		Right clicks, then moves down and left clicks
 
 ## Categories
 
